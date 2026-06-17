@@ -1,15 +1,165 @@
 <!DOCTYPE html>
-
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>不動産経営の磨き上げ診断ツール</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>不動産経営の磨き上げ診断ツール Ver.1</title>
+<style>
+body{margin:0;font-family:"Yu Gothic","Meiryo",sans-serif;background:#f4f8f9;color:#1f2933}
+header{background:#1f5f73;color:white;text-align:center;padding:26px 15px}
+header h1{margin:0;font-size:24px}
+header p{margin:8px 0 0;font-size:14px}
+main{max-width:1100px;margin:24px auto;padding:0 15px 40px}
+.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px}
+.flow div{background:white;border:1px solid #d5e3e6;border-radius:12px;padding:12px;text-align:center;color:#1f5f73;font-weight:bold}
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+section{background:white;border-radius:14px;padding:22px;box-shadow:0 4px 14px rgba(0,0,0,.06)}
+h2{color:#1f5f73;margin-top:0;border-bottom:2px solid #e3eff2;padding-bottom:8px}
+label{display:block;margin-top:14px;font-weight:bold;font-size:14px}
+.hint{display:block;font-size:12px;color:#667085;font-weight:normal}
+input,select,textarea{width:100%;box-sizing:border-box;margin-top:6px;padding:10px;border:1px solid #cfdce0;border-radius:8px;font-size:15px;font-family:inherit}
+textarea{min-height:78px;resize:vertical}
+.buttons{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+button{border:none;border-radius:999px;padding:11px 18px;font-weight:bold;cursor:pointer}
+.main-btn{background:#1f5f73;color:white}
+.print-btn{background:#2f7f6f;color:white}
+.reset-btn{background:#e8f3f5;color:#1f5f73}
+.sheet{border:1px solid #d5e3e6;border-radius:12px;padding:18px;background:white}
+.sheet-title{text-align:center;color:#1f5f73;border-bottom:3px solid #1f5f73;padding-bottom:10px}
+.meta{background:#e8f3f5;border-radius:10px;padding:12px;display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px;margin:14px 0}
+.item{border:1px solid #d5e3e6;border-left:5px solid #1f5f73;border-radius:8px;padding:10px;margin-top:10px;min-height:58px}
+.item h3{margin:0 0 4px;color:#1f5f73;font-size:14px}
+.item p{margin:0;white-space:pre-wrap;font-size:13.5px}
+.footer{margin-top:14px;padding-top:10px;border-top:1px dashed #cfdce0;text-align:center;color:#667085;font-size:12px}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.flow{grid-template-columns:repeat(2,1fr)}.flow div:last-child{grid-column:span 2}}
+@media print{
+header,.flow,.form-area,.preview-title,.buttons{display:none}
+body{background:white}
+main{margin:0;padding:0;max-width:none}
+.layout{display:block}
+section{box-shadow:none;padding:0}
+.sheet{width:210mm;min-height:297mm;box-sizing:border-box;border:none;padding:12mm}
+@page{size:A4;margin:8mm}
+}
+</style>
 </head>
 <body>
 
-<h1>不動産経営の磨き上げ診断ツール</h1>
+<header>
+<h1>不動産経営の磨き上げ診断ツール Ver.1</h1>
+<p>課題を見える化し、A4一枚の診断シートに整理します。</p>
+</header>
 
-<p>GitHub Pages テスト成功！</p>
+<main>
+<div class="flow">
+<div>み<br>見える化</div>
+<div>が<br>原因を見つける</div>
+<div>き<br>基準を決める</div>
+<div>あ<br>あるべき未来</div>
+<div>げ<br>現実に行動</div>
+</div>
+
+<div class="layout">
+<section class="form-area">
+<h2>入力フォーム</h2>
+
+<label>1. オーナー名<input id="owner" type="text" placeholder="例：山田 太郎"></label>
+<label>2. 物件名<input id="property" type="text" placeholder="例：山田ハイツ"></label>
+<label>3. 物件所在地<input id="address" type="text" placeholder="例：福岡市博多区〇〇"></label>
+
+<label>4. 物件の種類
+<select id="type">
+<option value="">選択してください</option>
+<option>アパート</option><option>マンション</option><option>店舗</option>
+<option>事務所</option><option>駐車場</option><option>土地</option><option>その他</option>
+</select>
+</label>
+
+<label>5. 現在困っていること
+<span class="hint">例：空室が増えている、手残りが少ない、修繕費が不安、相続が不安</span>
+<textarea id="problem"></textarea></label>
+
+<label>6. 数字で確認したい項目
+<span class="hint">例：物件別キャッシュフロー、家賃相場、借入返済、修繕積立、相続税</span>
+<textarea id="visible"></textarea></label>
+
+<label>7. 原因として考えられること<textarea id="cause"></textarea></label>
+<label>8. 判断するために必要な基準<textarea id="standard"></textarea></label>
+<label>9. 将来どうなっていたいか<textarea id="future"></textarea></label>
+<label>10. 今日から取り組む行動<textarea id="action"></textarea></label>
+
+<div class="buttons">
+<button class="main-btn" onclick="makeSheet()">診断シートを作成</button>
+<button class="print-btn" onclick="window.print()">印刷する</button>
+<button class="reset-btn" onclick="resetForm()">リセット</button>
+</div>
+</section>
+
+<section>
+<h2 class="preview-title">診断結果プレビュー</h2>
+
+<div class="sheet">
+<h2 class="sheet-title">不動産経営の磨き上げ診断シート</h2>
+
+<div class="meta">
+<div><strong>オーナー名：</strong><span id="outOwner">未入力</span></div>
+<div><strong>物件名：</strong><span id="outProperty">未入力</span></div>
+<div><strong>所在地：</strong><span id="outAddress">未入力</span></div>
+<div><strong>種類：</strong><span id="outType">未入力</span></div>
+</div>
+
+<div class="item"><h3>1. 現在の課題</h3><p id="outProblem">未入力</p></div>
+<div class="item"><h3>2. 見える化すべき項目</h3><p id="outVisible">未入力</p></div>
+<div class="item"><h3>3. 課題の原因</h3><p id="outCause">未入力</p></div>
+<div class="item"><h3>4. 判断基準</h3><p id="outStandard">未入力</p></div>
+<div class="item"><h3>5. あるべき未来</h3><p id="outFuture">未入力</p></div>
+<div class="item"><h3>6. 行動計画</h3><p id="outAction">未入力</p></div>
+
+<div class="footer">
+み：見える化　が：原因を見つける　き：基準を決める　あ：あるべき未来を描く　げ：現実に行動する
+</div>
+</div>
+
+<div class="buttons">
+<button class="print-btn" onclick="window.print()">このシートを印刷する</button>
+</div>
+</section>
+</div>
+</main>
+
+<script>
+function getValue(id){
+  const v=document.getElementById(id).value.trim();
+  return v===""?"未入力":v;
+}
+
+function makeSheet(){
+  document.getElementById("outOwner").textContent=getValue("owner");
+  document.getElementById("outProperty").textContent=getValue("property");
+  document.getElementById("outAddress").textContent=getValue("address");
+  document.getElementById("outType").textContent=getValue("type");
+  document.getElementById("outProblem").textContent=getValue("problem");
+  document.getElementById("outVisible").textContent=getValue("visible");
+  document.getElementById("outCause").textContent=getValue("cause");
+  document.getElementById("outStandard").textContent=getValue("standard");
+  document.getElementById("outFuture").textContent=getValue("future");
+  document.getElementById("outAction").textContent=getValue("action");
+}
+
+function resetForm(){
+  ["owner","property","address","type","problem","visible","cause","standard","future","action"].forEach(id=>{
+    document.getElementById(id).value="";
+  });
+  makeSheet();
+}
+
+["owner","property","address","type","problem","visible","cause","standard","future","action"].forEach(id=>{
+  document.getElementById(id).addEventListener("input",makeSheet);
+  document.getElementById(id).addEventListener("change",makeSheet);
+});
+
+makeSheet();
+</script>
 
 </body>
 </html>
