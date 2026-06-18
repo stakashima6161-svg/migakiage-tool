@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>物件別キャッシュフロー診断｜不動産経営の磨き上げツール</title>
+<meta name="description" content="所有物件ごとの収益性とキャッシュフローを比較し、強化すべき物件・見直すべき物件を見える化します。">
+<style>
+  :root{
+    --navy-950:#0b1e33; --navy-900:#102943; --navy-800:#15324f; --navy-700:#1d4266;
+    --blue-600:#2e6fa6; --blue-500:#3f8fd1; --blue-100:#eaf2fa;
+    --gold-500:#c7a356; --gold-300:#e3c98a;
+    --paper:#f5f7fa; --paper-warm:#eef2f6;
+    --ink-900:#142535; --ink-600:#4d5d6e; --ink-400:#7c8a98;
+    --line:#dde4eb; --white:#ffffff;
+    --good:#2c7a4b; --good-bg:#eaf4ec;
+    --warn:#a06a0e; --warn-bg:#fbf1de;
+    --bad:#b03a2e; --bad-bg:#fbeae8;
+    --radius-lg:18px; --radius-md:12px;
+    --shadow-card:0 1px 2px rgba(11,30,51,0.04), 0 8px 24px -10px rgba(11,30,51,0.12);
+    --serif: "Shippori Mincho", "Noto Serif JP", "Hiragino Mincho ProN", serif;
+    --sans: "Zen Kaku Gothic New", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+  }
+  @import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:var(--sans); color:var(--ink-900); background:var(--paper); -webkit-font-smoothing:antialiased; line-height:1.7; }
+  a{color:inherit;}
+  .skip-link{ position:absolute; left:-999px; top:0; background:var(--navy-900); color:#fff; padding:8px 14px; border-radius:8px; z-index:999; }
+  .skip-link:focus{ left:8px; top:8px; }
+
+  header.site{
+    position:relative;
+    background:
+      radial-gradient(1200px 480px at 12% -10%, rgba(63,143,209,0.22), transparent 60%),
+      radial-gradient(900px 420px at 95% 0%, rgba(199,163,86,0.16), transparent 55%),
+      linear-gradient(165deg, var(--navy-950) 0%, var(--navy-900) 48%, var(--navy-800) 100%);
+    color:#fff; overflow:hidden;
+  }
+  .header-inner{ max-width:980px; margin:0 auto; padding:24px 24px 56px; position:relative; z-index:1; }
+  .brand-row{ display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:34px; flex-wrap:wrap; }
+  .brand{ display:flex; align-items:center; gap:10px; font-family:var(--serif); font-weight:600; font-size:14.5px; letter-spacing:.04em; color:rgba(255,255,255,0.86); text-decoration:none; }
+  .brand .mark{ width:28px; height:28px; border-radius:50%; background:linear-gradient(140deg, var(--gold-300), var(--gold-500) 60%, #9a7a37); display:flex; align-items:center; justify-content:center; font-family:var(--serif); font-weight:800; font-size:12px; color:var(--navy-950); flex-shrink:0; }
+  .back-link{ display:inline-flex; align-items:center; gap:6px; font-size:13px; color:rgba(255,255,255,0.7); text-decoration:none; }
+  .back-link svg{ width:14px; height:14px; }
+  .back-link:hover{ color:#fff; }
+  .hero-kicker{ display:inline-flex; align-items:center; gap:8px; font-size:12.5px; letter-spacing:.12em; color:var(--gold-300); margin-bottom:16px; font-weight:500; }
+  .hero-kicker .rule{ width:24px; height:1px; background:var(--gold-300); display:inline-block; }
+  h1.hero-title{ font-family:var(--serif); font-weight:800; font-size:clamp(24px, 4.4vw, 36px); line-height:1.5; margin:0 0 16px; }
+  p.hero-lead{ font-size:clamp(14px, 1.9vw, 16.5px); color:rgba(255,255,255,0.82); max-width:600px; margin:0; }
+  .wave-divider{ display:block; width:100%; height:40px; margin-top:-2px; }
+
+  main{ background:var(--paper); }
+  .section{ max-width:980px; margin:0 auto; padding:48px 24px; }
+  .section.tight-top{ padding-top:0; margin-top:-28px; }
+
+  .toc{ display:flex; flex-wrap:wrap; gap:10px; background:var(--white); border:1px solid var(--line); border-radius:var(--radius-md); padding:16px 18px; box-shadow:var(--shadow-card); position:relative; z-index:2; }
+  .toc a{ font-size:12.5px; font-weight:700; color:var(--blue-600); text-decoration:none; padding:7px 13px; border-radius:999px; background:var(--blue-100); }
+  .toc a:hover{ background:var(--blue-500); color:#fff; }
+
+  .panel{ background:var(--white); border:1px solid var(--line); border-radius:var(--radius-lg); box-shadow:var(--shadow-card); padding:28px clamp(18px,4vw,36px); margin-bottom:28px; scroll-margin-top:20px; }
+  .panel-head{ margin-bottom:24px; }
+  .panel-eyebrow{ font-size:11.5px; letter-spacing:.12em; color:var(--blue-600); font-weight:700; margin-bottom:8px; display:block; }
+  .panel-title{ font-family:var(--serif); font-weight:700; font-size:clamp(19px,2.8vw,23px); color:var(--navy-900); margin:0 0 10px; }
+  .panel-desc{ color:var(--ink-600); font-size:14px; margin:0; }
+
+  .property-card{ border:1px solid var(--line); border-radius:14px; padding:20px clamp(14px,3vw,22px); margin-bottom:18px; position:relative; }
+  .property-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+  .property-head h3{ font-family:var(--serif); font-size:15.5px; color:var(--navy-900); margin:0; display:flex; align-items:center; gap:8px; }
+  .property-head h3 .p-dot{ width:8px; height:8px; border-radius:50%; display:inline-block; }
+  .field-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:14px; }
+  .field{ display:flex; flex-direction:column; gap:6px; }
+  .field label{ font-size:12.5px; font-weight:700; color:var(--navy-800); }
+  .field .hint{ font-size:11px; color:var(--ink-400); font-weight:400; }
+  .input-wrap{ position:relative; display:flex; align-items:center; }
+  .input-wrap input[type="number"], .input-wrap input[type="text"]{ width:100%; padding:10px 40px 10px 12px; border:1.5px solid var(--line); border-radius:10px; font-size:14px; font-family:var(--sans); color:var(--ink-900); background:var(--white); transition:border-color .15s, box-shadow .15s; }
+  .input-wrap input:focus{ outline:none; border-color:var(--blue-500); box-shadow:0 0 0 3px rgba(63,143,209,0.18); }
+  .input-wrap .unit{ position:absolute; right:12px; font-size:12px; color:var(--ink-400); font-weight:700; pointer-events:none; }
+
+  .compare-wrap{ overflow-x:auto; margin-top:8px; }
+  .compare-table{ width:100%; border-collapse:collapse; font-size:13.5px; min-width:520px; }
+  .compare-table th, .compare-table td{ padding:12px 14px; border-bottom:1px solid var(--line); text-align:right; white-space:nowrap; }
+  .compare-table th:first-child, .compare-table td:first-child{ text-align:left; white-space:normal; }
+  .compare-table thead th{ color:var(--ink-400); font-weight:700; font-size:12px; letter-spacing:.03em; border-bottom:2px solid var(--navy-900); }
+  .compare-table tbody tr:last-child td{ border-bottom:none; }
+  .compare-table .row-label{ font-weight:700; color:var(--navy-900); }
+  .compare-table .cf-pos{ color:var(--good); font-weight:800; }
+  .compare-table .cf-neg{ color:var(--bad); font-weight:800; }
+  .compare-table .best-tag{ display:inline-block; font-size:10.5px; background:var(--gold-300); color:var(--navy-950); padding:2px 7px; border-radius:999px; margin-left:6px; font-weight:700; }
+
+  .result-box{ margin-top:24px; border-radius:14px; padding:22px clamp(16px,3vw,26px); background:var(--paper-warm); border:1px solid var(--line); }
+
+  .verdict{ margin-top:18px; border-radius:12px; padding:18px 20px; display:flex; gap:14px; align-items:flex-start; }
+  .verdict.v-good{ background:var(--good-bg); }
+  .verdict.v-warn{ background:var(--warn-bg); }
+  .verdict.v-bad{ background:var(--bad-bg); }
+  .verdict .v-icon{ flex-shrink:0; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+  .v-good .v-icon{ background:var(--good); }
+  .v-warn .v-icon{ background:var(--warn); }
+  .v-bad .v-icon{ background:var(--bad); }
+  .v-icon svg{ width:16px; height:16px; }
+  .verdict .v-title{ font-weight:700; font-size:14.5px; margin:0 0 4px; }
+  .v-good .v-title{ color:var(--good); }
+  .v-warn .v-title{ color:var(--warn); }
+  .v-bad .v-title{ color:var(--bad); }
+  .verdict p{ margin:0; font-size:13.5px; color:var(--ink-600); }
+
+  .btn-row{ display:flex; gap:12px; flex-wrap:wrap; margin-top:22px; }
+  .btn{ appearance:none; border:none; cursor:pointer; font-family:var(--sans); font-weight:700; font-size:14px; padding:13px 24px; border-radius:10px; display:inline-flex; align-items:center; gap:8px; transition:transform .15s, box-shadow .15s, background .15s; }
+  .btn:active{ transform:translateY(1px); }
+  .btn-primary{ background:linear-gradient(135deg, var(--blue-600), var(--navy-800)); color:#fff; box-shadow:0 8px 20px -8px rgba(46,111,166,0.5); }
+  .btn-primary:hover{ box-shadow:0 12px 26px -8px rgba(46,111,166,0.6); }
+  .btn-secondary{ background:var(--white); color:var(--navy-800); border:1.5px solid var(--line); }
+  .btn-secondary:hover{ border-color:var(--blue-500); color:var(--blue-600); }
+  .btn svg{ width:16px; height:16px; }
+
+  .note-box{ margin-top:18px; font-size:12.5px; color:var(--ink-400); background:var(--paper-warm); border-radius:10px; padding:12px 16px; line-height:1.7; }
+
+  .related-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:14px; margin-top:8px; }
+  .related-card{ background:var(--white); border:1px solid var(--line); border-radius:12px; padding:16px 18px; text-decoration:none; display:flex; flex-direction:column; gap:6px; transition:transform .18s, box-shadow .18s, border-color .18s; }
+  .related-card:hover{ transform:translateY(-3px); box-shadow:0 14px 28px -14px rgba(16,41,67,0.25); border-color:rgba(63,143,209,0.35); }
+  .related-card .rc-title{ font-weight:700; font-size:13.5px; color:var(--navy-900); }
+  .related-card .rc-desc{ font-size:12px; color:var(--ink-600); }
+  .related-card .rc-cta{ font-size:12px; font-weight:700; color:var(--blue-600); margin-top:4px; }
+
+  footer.site{ background:var(--navy-950); color:rgba(255,255,255,0.6); padding:30px 24px; text-align:center; font-size:12.5px; }
+  footer.site .f-brand{ color:rgba(255,255,255,0.85); font-weight:700; margin-bottom:6px; }
+
+  @media (max-width:560px){
+    .header-inner{ padding:20px 18px 48px; }
+    .section{ padding:32px 18px; }
+    .panel{ padding:22px 16px; }
+  }
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; scroll-behavior:auto !important; } }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">本文へスキップ</a>
+
+<header class="site">
+  <div class="header-inner">
+    <div class="brand-row">
+      <a class="brand" href="index.html"><span class="mark">磨</span>不動産経営の磨き上げ</a>
+      <a class="back-link" href="index.html">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        ツール一覧へ戻る
+      </a>
+    </div>
+    <span class="hero-kicker"><span class="rule"></span>04 / CASH FLOW DIAGNOSIS</span>
+    <h1 class="hero-title">物件別キャッシュフロー診断</h1>
+    <p class="hero-lead">所有する物件を最大3件まで入力し、収益性とキャッシュフローを比較します。強化すべき物件・見直すべき物件を見える化します。</p>
+  </div>
+  <svg class="wave-divider" viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M0,32 C240,68 480,0 720,24 C960,48 1200,8 1440,32 L1440,60 L0,60 Z" fill="#f5f7fa"></path>
+  </svg>
+</header>
+
+<main id="main">
+  <div class="section tight-top">
+    <nav class="toc" aria-label="ツール内ナビゲーション">
+      <a href="#input">① 物件情報の入力</a>
+      <a href="#compare">② 比較結果</a>
+      <a href="#related">③ 関連ツール</a>
+    </nav>
+  </div>
+
+  <section class="section" style="padding-top:0;">
+    <div class="panel" id="input">
+      <div class="panel-head">
+        <span class="panel-eyebrow">STEP 1 — 見える化</span>
+        <h2 class="panel-title">物件情報の入力</h2>
+        <p class="panel-desc">最大3物件まで入力できます。1物件のみでも診断可能です。空室率は満室想定に対する割合（%）で入力してください。</p>
+      </div>
+
+      <div id="propertyList"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" id="calcCfBtn" type="button">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          キャッシュフローを比較する
+        </button>
+      </div>
+      <div class="note-box"><strong>ご注意：</strong>本ツールの計算結果は一般的な目安です。実際の収益性の評価には、修繕計画・大規模修繕費・税金等も含めた個別の検討が必要です。</div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0;" id="compare">
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-eyebrow">STEP 2 — 原因を見つける</span>
+        <h2 class="panel-title">物件別比較結果</h2>
+        <p class="panel-desc">入力した物件のキャッシュフローと利回り目安を比較します。</p>
+      </div>
+
+      <div class="result-box" id="cfResultBox" style="display:none;">
+        <div class="compare-wrap">
+          <table class="compare-table">
+            <thead>
+              <tr><th>項目</th><th id="th1">物件1</th><th id="th2">物件2</th><th id="th3">物件3</th></tr>
+            </thead>
+            <tbody id="cfTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="verdict" id="cfVerdict" style="display:none;"></div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0;" id="related">
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-eyebrow">NEXT STEP</span>
+        <h2 class="panel-title">関連する診断ツール</h2>
+        <p class="panel-desc">物件ごとの収益性が分かったら、他の視点からも経営状況を確認してみましょう。</p>
+      </div>
+      <div class="related-grid">
+        <a class="related-card" href="kinri.html">
+          <span class="rc-title">大規模修繕・借入金利シミュレーション</span>
+          <span class="rc-desc">金利上昇や修繕費の影響を確認します。</span>
+          <span class="rc-cta">診断する →</span>
+        </a>
+        <a class="related-card" href="houjinka.html">
+          <span class="rc-title">法人化診断</span>
+          <span class="rc-desc">所得規模から法人化の目安を確認します。</span>
+          <span class="rc-cta">診断する →</span>
+        </a>
+        <a class="related-card" href="migakiage.html">
+          <span class="rc-title">不動産経営の磨き上げ診断</span>
+          <span class="rc-desc">経営全体を5つの視点で整理します。</span>
+          <span class="rc-cta">診断する →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="f-brand">不動産経営の磨き上げツール</div>
+  <p>本ツールの診断結果は一般的な目安であり、個別の税務・経営上の判断には専門家への相談をおすすめします。</p>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  function yen(n){ if(!isFinite(n)) return "—"; return Math.round(n).toLocaleString("ja-JP") + " 円"; }
+  function num(id){ var el = document.getElementById(id); if(!el) return 0; var v = parseFloat(el.value); return isFinite(v) ? v : 0; }
+  function str(id){ var el = document.getElementById(id); return el ? el.value.trim() : ""; }
+
+  var colors = ["#3f8fd1", "#c7a356", "#2c7a4b"];
+  var list = document.getElementById("propertyList");
+
+  for (var i = 1; i <= 3; i++){
+    var card = document.createElement("div");
+    card.className = "property-card";
+    card.innerHTML =
+      "<div class='property-head'><h3><span class='p-dot' style='background:" + colors[i-1] + "'></span>物件" + i + (i===1?"<span class='hint' style='margin-left:8px;color:var(--ink-400);font-weight:400;'>（必須）</span>":"<span class='hint' style='margin-left:8px;color:var(--ink-400);font-weight:400;'>（任意）</span>") + "</h3></div>" +
+      "<div class='field-grid'>" +
+        "<div class='field'><label for='pName" + i + "'>物件名</label><div class='input-wrap'><input type='text' id='pName" + i + "' placeholder='例：〇〇ハイツ'></div></div>" +
+        "<div class='field'><label for='pRent" + i + "'>満室時 年間家賃収入</label><div class='input-wrap'><input type='number' id='pRent" + i + "' min='0' step='10000' placeholder='例：6000000'><span class='unit'>円</span></div></div>" +
+        "<div class='field'><label for='pVacancy" + i + "'>空室率</label><div class='input-wrap'><input type='number' id='pVacancy" + i + "' min='0' max='100' step='1' placeholder='例：5'><span class='unit'>%</span></div></div>" +
+        "<div class='field'><label for='pExpense" + i + "'>年間運営費<span class='hint'>（管理費・固都税等）</span></label><div class='input-wrap'><input type='number' id='pExpense" + i + "' min='0' step='10000' placeholder='例：1200000'><span class='unit'>円</span></div></div>" +
+        "<div class='field'><label for='pLoan" + i + "'>年間ローン返済額</label><div class='input-wrap'><input type='number' id='pLoan" + i + "' min='0' step='10000' placeholder='例：3000000'><span class='unit'>円</span></div></div>" +
+        "<div class='field'><label for='pValue" + i + "'>物件価格（取得価格）<span class='hint'>（任意・利回り計算用）</span></label><div class='input-wrap'><input type='number' id='pValue" + i + "' min='0' step='100000' placeholder='例：80000000'><span class='unit'>円</span></div></div>" +
+      "</div>";
+    list.appendChild(card);
+  }
+
+  document.getElementById("calcCfBtn").addEventListener("click", function(){
+    var properties = [];
+    for (var i = 1; i <= 3; i++){
+      var rent = num("pRent" + i);
+      var name = str("pName" + i) || ("物件" + i);
+      if (rent <= 0 && i > 1){ continue; }
+      var vacancy = num("pVacancy" + i);
+      var expense = num("pExpense" + i);
+      var loan = num("pLoan" + i);
+      var value = num("pValue" + i);
+
+      var effectiveRent = rent * (1 - vacancy/100);
+      var noi = effectiveRent - expense;
+      var cf = noi - loan;
+      var yieldRate = value > 0 ? (effectiveRent / value * 100) : null;
+
+      properties.push({ name: name, rent: rent, vacancy: vacancy, expense: expense, loan: loan, value: value, effectiveRent: effectiveRent, noi: noi, cf: cf, yieldRate: yieldRate });
+    }
+
+    if (properties.length === 0){
+      alert("少なくとも物件1の情報を入力してください。");
+      return;
+    }
+
+    for (var k = 0; k < 3; k++){
+      var th = document.getElementById("th" + (k+1));
+      th.textContent = k < properties.length ? properties[k].name : "—";
+      th.style.display = k < properties.length ? "" : "none";
+    }
+
+    function rowCells(getValue, cls){
+      var html = "";
+      for (var k = 0; k < 3; k++){
+        if (k >= properties.length){ continue; }
+        var v = getValue(properties[k]);
+        html += "<td class='" + (cls?cls(properties[k]):'') + "'>" + v + "</td>";
+      }
+      return html;
+    }
+
+    var bestIdx = 0;
+    for (var b = 1; b < properties.length; b++){
+      if (properties[b].cf > properties[bestIdx].cf) bestIdx = b;
+    }
+
+    var cfRow = "<tr><td class='row-label'>年間キャッシュフロー</td>";
+    for (var c = 0; c < properties.length; c++){
+      var p = properties[c];
+      var tag = (c === bestIdx && properties.length > 1) ? "<span class='best-tag'>最良</span>" : "";
+      cfRow += "<td class='" + (p.cf >= 0 ? "cf-pos" : "cf-neg") + "'>" + yen(p.cf) + tag + "</td>";
+    }
+    cfRow += "</tr>";
+
+    var rows = "";
+    rows += "<tr><td class='row-label'>満室時 年間家賃収入</td>" + rowCells(function(p){ return yen(p.rent); }) + "</tr>";
+    rows += "<tr><td class='row-label'>空室率</td>" + rowCells(function(p){ return p.vacancy + " %"; }) + "</tr>";
+    rows += "<tr><td class='row-label'>実効家賃収入</td>" + rowCells(function(p){ return yen(p.effectiveRent); }) + "</tr>";
+    rows += "<tr><td class='row-label'>年間運営費</td>" + rowCells(function(p){ return "− " + yen(p.expense); }) + "</tr>";
+    rows += "<tr><td class='row-label'>NOI（運営純益）</td>" + rowCells(function(p){ return yen(p.noi); }) + "</tr>";
+    rows += "<tr><td class='row-label'>年間ローン返済額</td>" + rowCells(function(p){ return "− " + yen(p.loan); }) + "</tr>";
+    rows += cfRow;
+    rows += "<tr><td class='row-label'>表面利回り目安<span style='font-weight:400;color:var(--ink-400);'>（物件価格入力時）</span></td>" + rowCells(function(p){ return p.yieldRate !== null ? p.yieldRate.toFixed(2) + " %" : "—"; }) + "</tr>";
+
+    document.getElementById("cfTableBody").innerHTML = rows;
+    document.getElementById("cfResultBox").style.display = "block";
+
+    var verdict = document.getElementById("cfVerdict");
+    var negativeProps = properties.filter(function(p){ return p.cf < 0; });
+    var cls, html;
+    if (negativeProps.length > 0){
+      cls = "v-bad";
+      var names = negativeProps.map(function(p){ return p.name; }).join("、");
+      html = "<div class='v-icon'><svg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M12 9v4M12 17h.01M10.29 3.86l-8.18 14.18A1 1 0 003 19.5h18a1 1 0 00.89-1.46L13.71 3.86a1 1 0 00-1.42 0z' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg></div><div><p class='v-title'>" + names + " のキャッシュフローがマイナスです</p><p>空室率の改善、運営費の見直し、借入条件の再検討など、優先的に対応をご検討ください。</p></div>";
+    } else if (properties.length > 1){
+      cls = "v-good";
+      html = "<div class='v-icon'><svg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M20 6L9 17l-5-5' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/></svg></div><div><p class='v-title'>すべての物件でキャッシュフローがプラスです</p><p>" + properties[bestIdx].name + " が最も収益性が高い結果となりました。今後の投資判断の参考にしてください。</p></div>";
+    } else {
+      cls = "v-good";
+      html = "<div class='v-icon'><svg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M20 6L9 17l-5-5' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/></svg></div><div><p class='v-title'>キャッシュフローはプラスです</p><p>引き続き空室率や運営費の動向を確認していきましょう。</p></div>";
+    }
+    verdict.className = "verdict " + cls;
+    verdict.innerHTML = html;
+    verdict.style.display = "flex";
+  });
+})();
+</script>
+</body>
+</html>

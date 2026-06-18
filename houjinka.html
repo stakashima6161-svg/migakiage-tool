@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法人化診断｜不動産経営の磨き上げツール</title>
+<meta name="description" content="所得規模や資産構成から、個人所有のままか法人化すべきかの判断材料を整理し、税務上の視点を提示します。">
+<style>
+  :root{
+    --navy-950:#0b1e33; --navy-900:#102943; --navy-800:#15324f; --navy-700:#1d4266;
+    --blue-600:#2e6fa6; --blue-500:#3f8fd1; --blue-100:#eaf2fa;
+    --gold-500:#c7a356; --gold-300:#e3c98a;
+    --paper:#f5f7fa; --paper-warm:#eef2f6;
+    --ink-900:#142535; --ink-600:#4d5d6e; --ink-400:#7c8a98;
+    --line:#dde4eb; --white:#ffffff;
+    --good:#2c7a4b; --good-bg:#eaf4ec;
+    --warn:#a06a0e; --warn-bg:#fbf1de;
+    --bad:#b03a2e; --bad-bg:#fbeae8;
+    --radius-lg:18px; --radius-md:12px;
+    --shadow-card:0 1px 2px rgba(11,30,51,0.04), 0 8px 24px -10px rgba(11,30,51,0.12);
+    --serif: "Shippori Mincho", "Noto Serif JP", "Hiragino Mincho ProN", serif;
+    --sans: "Zen Kaku Gothic New", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+  }
+  @import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:var(--sans); color:var(--ink-900); background:var(--paper); -webkit-font-smoothing:antialiased; line-height:1.7; }
+  a{color:inherit;}
+  .skip-link{ position:absolute; left:-999px; top:0; background:var(--navy-900); color:#fff; padding:8px 14px; border-radius:8px; z-index:999; }
+  .skip-link:focus{ left:8px; top:8px; }
+
+  header.site{
+    position:relative;
+    background:
+      radial-gradient(1200px 480px at 12% -10%, rgba(63,143,209,0.22), transparent 60%),
+      radial-gradient(900px 420px at 95% 0%, rgba(199,163,86,0.16), transparent 55%),
+      linear-gradient(165deg, var(--navy-950) 0%, var(--navy-900) 48%, var(--navy-800) 100%);
+    color:#fff; overflow:hidden;
+  }
+  .header-inner{ max-width:920px; margin:0 auto; padding:24px 24px 56px; position:relative; z-index:1; }
+  .brand-row{ display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:34px; flex-wrap:wrap; }
+  .brand{ display:flex; align-items:center; gap:10px; font-family:var(--serif); font-weight:600; font-size:14.5px; letter-spacing:.04em; color:rgba(255,255,255,0.86); text-decoration:none; }
+  .brand .mark{ width:28px; height:28px; border-radius:50%; background:linear-gradient(140deg, var(--gold-300), var(--gold-500) 60%, #9a7a37); display:flex; align-items:center; justify-content:center; font-family:var(--serif); font-weight:800; font-size:12px; color:var(--navy-950); flex-shrink:0; }
+  .back-link{ display:inline-flex; align-items:center; gap:6px; font-size:13px; color:rgba(255,255,255,0.7); text-decoration:none; }
+  .back-link svg{ width:14px; height:14px; }
+  .back-link:hover{ color:#fff; }
+  .hero-kicker{ display:inline-flex; align-items:center; gap:8px; font-size:12.5px; letter-spacing:.12em; color:var(--gold-300); margin-bottom:16px; font-weight:500; }
+  .hero-kicker .rule{ width:24px; height:1px; background:var(--gold-300); display:inline-block; }
+  h1.hero-title{ font-family:var(--serif); font-weight:800; font-size:clamp(24px, 4.4vw, 36px); line-height:1.5; margin:0 0 16px; }
+  p.hero-lead{ font-size:clamp(14px, 1.9vw, 16.5px); color:rgba(255,255,255,0.82); max-width:600px; margin:0; }
+  .wave-divider{ display:block; width:100%; height:40px; margin-top:-2px; }
+
+  main{ background:var(--paper); }
+  .section{ max-width:920px; margin:0 auto; padding:48px 24px; }
+  .section.tight-top{ padding-top:0; margin-top:-28px; }
+
+  .toc{ display:flex; flex-wrap:wrap; gap:10px; background:var(--white); border:1px solid var(--line); border-radius:var(--radius-md); padding:16px 18px; box-shadow:var(--shadow-card); position:relative; z-index:2; }
+  .toc a{ font-size:12.5px; font-weight:700; color:var(--blue-600); text-decoration:none; padding:7px 13px; border-radius:999px; background:var(--blue-100); }
+  .toc a:hover{ background:var(--blue-500); color:#fff; }
+
+  .panel{ background:var(--white); border:1px solid var(--line); border-radius:var(--radius-lg); box-shadow:var(--shadow-card); padding:28px clamp(18px,4vw,36px); margin-bottom:28px; scroll-margin-top:20px; }
+  .panel-head{ margin-bottom:24px; }
+  .panel-eyebrow{ font-size:11.5px; letter-spacing:.12em; color:var(--blue-600); font-weight:700; margin-bottom:8px; display:block; }
+  .panel-title{ font-family:var(--serif); font-weight:700; font-size:clamp(19px,2.8vw,23px); color:var(--navy-900); margin:0 0 10px; }
+  .panel-desc{ color:var(--ink-600); font-size:14px; margin:0; }
+
+  .field-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:16px; margin-bottom:8px; }
+  .field{ display:flex; flex-direction:column; gap:6px; }
+  .field label{ font-size:13px; font-weight:700; color:var(--navy-800); }
+  .field .hint{ font-size:11.5px; color:var(--ink-400); font-weight:400; }
+  .input-wrap{ position:relative; display:flex; align-items:center; }
+  .input-wrap input[type="number"]{ width:100%; padding:11px 44px 11px 13px; border:1.5px solid var(--line); border-radius:10px; font-size:15px; font-family:var(--sans); color:var(--ink-900); background:var(--white); transition:border-color .15s, box-shadow .15s; }
+  .input-wrap input:focus{ outline:none; border-color:var(--blue-500); box-shadow:0 0 0 3px rgba(63,143,209,0.18); }
+  .input-wrap .unit{ position:absolute; right:13px; font-size:13px; color:var(--ink-400); font-weight:700; pointer-events:none; }
+
+  .compare-table{ width:100%; border-collapse:collapse; margin-top:20px; font-size:13.5px; }
+  .compare-table th, .compare-table td{ padding:12px 14px; border-bottom:1px solid var(--line); text-align:right; }
+  .compare-table th:first-child, .compare-table td:first-child{ text-align:left; }
+  .compare-table thead th{ color:var(--ink-400); font-weight:700; font-size:12px; letter-spacing:.03em; border-bottom:2px solid var(--navy-900); }
+  .compare-table tbody tr:last-child td{ border-bottom:none; }
+  .compare-table .row-label{ font-weight:700; color:var(--navy-900); }
+  .compare-table td.highlight{ color:var(--blue-600); font-weight:800; }
+
+  .result-box{ margin-top:24px; border-radius:14px; padding:22px clamp(16px,3vw,26px); background:var(--paper-warm); border:1px solid var(--line); }
+
+  .month-result{ margin-top:22px; text-align:center; padding:26px 18px; border-radius:14px; background:linear-gradient(150deg, var(--navy-900), var(--navy-800)); color:#fff; }
+  .month-result .m-label{ font-size:12.5px; letter-spacing:.06em; color:var(--gold-300); font-weight:700; margin-bottom:10px; display:block; }
+  .month-result .m-value{ font-family:var(--serif); font-weight:800; font-size:clamp(26px,5vw,34px); }
+  .month-result .m-sub{ font-size:12.5px; color:rgba(255,255,255,0.65); margin-top:8px; }
+
+  .verdict{ margin-top:18px; border-radius:12px; padding:18px 20px; display:flex; gap:14px; align-items:flex-start; }
+  .verdict.v-good{ background:var(--good-bg); }
+  .verdict.v-warn{ background:var(--warn-bg); }
+  .verdict.v-bad{ background:var(--bad-bg); }
+  .verdict .v-icon{ flex-shrink:0; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+  .v-good .v-icon{ background:var(--good); }
+  .v-warn .v-icon{ background:var(--warn); }
+  .v-bad .v-icon{ background:var(--bad); }
+  .v-icon svg{ width:16px; height:16px; }
+  .verdict .v-title{ font-weight:700; font-size:14.5px; margin:0 0 4px; }
+  .v-good .v-title{ color:var(--good); }
+  .v-warn .v-title{ color:var(--warn); }
+  .v-bad .v-title{ color:var(--bad); }
+  .verdict p{ margin:0; font-size:13.5px; color:var(--ink-600); }
+
+  .btn-row{ display:flex; gap:12px; flex-wrap:wrap; margin-top:22px; }
+  .btn{ appearance:none; border:none; cursor:pointer; font-family:var(--sans); font-weight:700; font-size:14px; padding:13px 24px; border-radius:10px; display:inline-flex; align-items:center; gap:8px; transition:transform .15s, box-shadow .15s, background .15s; }
+  .btn:active{ transform:translateY(1px); }
+  .btn-primary{ background:linear-gradient(135deg, var(--blue-600), var(--navy-800)); color:#fff; box-shadow:0 8px 20px -8px rgba(46,111,166,0.5); }
+  .btn-primary:hover{ box-shadow:0 12px 26px -8px rgba(46,111,166,0.6); }
+  .btn svg{ width:16px; height:16px; }
+
+  .note-box{ margin-top:18px; font-size:12.5px; color:var(--ink-400); background:var(--paper-warm); border-radius:10px; padding:12px 16px; line-height:1.7; }
+  .note-box strong{ color:var(--ink-600); }
+
+  .related-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:14px; margin-top:8px; }
+  .related-card{ background:var(--white); border:1px solid var(--line); border-radius:12px; padding:16px 18px; text-decoration:none; display:flex; flex-direction:column; gap:6px; transition:transform .18s, box-shadow .18s, border-color .18s; }
+  .related-card:hover{ transform:translateY(-3px); box-shadow:0 14px 28px -14px rgba(16,41,67,0.25); border-color:rgba(63,143,209,0.35); }
+  .related-card .rc-title{ font-weight:700; font-size:13.5px; color:var(--navy-900); }
+  .related-card .rc-desc{ font-size:12px; color:var(--ink-600); }
+  .related-card .rc-cta{ font-size:12px; font-weight:700; color:var(--blue-600); margin-top:4px; }
+
+  footer.site{ background:var(--navy-950); color:rgba(255,255,255,0.6); padding:30px 24px; text-align:center; font-size:12.5px; }
+  footer.site .f-brand{ color:rgba(255,255,255,0.85); font-weight:700; margin-bottom:6px; }
+
+  @media (max-width:560px){
+    .header-inner{ padding:20px 18px 48px; }
+    .section{ padding:32px 18px; }
+    .panel{ padding:22px 16px; }
+    .compare-table{ font-size:12px; }
+    .compare-table th, .compare-table td{ padding:9px 8px; }
+  }
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; scroll-behavior:auto !important; } }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">本文へスキップ</a>
+
+<header class="site">
+  <div class="header-inner">
+    <div class="brand-row">
+      <a class="brand" href="index.html"><span class="mark">磨</span>不動産経営の磨き上げ</a>
+      <a class="back-link" href="index.html">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        ツール一覧へ戻る
+      </a>
+    </div>
+    <span class="hero-kicker"><span class="rule"></span>05 / INCORPORATION DIAGNOSIS</span>
+    <h1 class="hero-title">法人化診断</h1>
+    <p class="hero-lead">不動産所得の規模から、個人所有のままか法人化を検討すべきかの目安をシミュレーションします。</p>
+  </div>
+  <svg class="wave-divider" viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M0,32 C240,68 480,0 720,24 C960,48 1200,8 1440,32 L1440,60 L0,60 Z" fill="#f5f7fa"></path>
+  </svg>
+</header>
+
+<main id="main">
+  <div class="section tight-top">
+    <nav class="toc" aria-label="ツール内ナビゲーション">
+      <a href="#sim">① 税負担シミュレーション</a>
+      <a href="#related">② 関連ツール</a>
+    </nav>
+  </div>
+
+  <section class="section" style="padding-top:0;">
+    <div class="panel" id="sim">
+      <div class="panel-head">
+        <span class="panel-eyebrow">STEP 1 — 基準を決める</span>
+        <h2 class="panel-title">個人と法人、税負担の比較目安</h2>
+        <p class="panel-desc">不動産所得の年間課税所得（必要経費等を引いた後の金額）を入力すると、個人で持ち続けた場合の所得税・住民税の概算と、法人で持った場合の概算実効税率を比較します。</p>
+      </div>
+
+      <div class="field-grid">
+        <div class="field">
+          <label for="taxableIncome">不動産所得の年間課税所得<span class="hint">（必要経費・控除後の金額）</span></label>
+          <div class="input-wrap"><input type="number" id="taxableIncome" inputmode="numeric" min="0" step="100000" placeholder="例：8000000"><span class="unit">円</span></div>
+        </div>
+      </div>
+
+      <div class="result-box" id="houjinkaResultBox" style="display:none;">
+        <table class="compare-table">
+          <thead><tr><th>区分</th><th>概算税額</th><th>実効税率の目安</th></tr></thead>
+          <tbody id="houjinkaTableBody"></tbody>
+        </table>
+      </div>
+
+      <div class="month-result" id="diffResultBox" style="display:none;">
+        <span class="m-label">個人と法人の税負担差（目安）</span>
+        <span class="m-value" id="diffValue">—</span>
+        <div class="m-sub" id="diffSub"></div>
+      </div>
+
+      <div class="verdict" id="houjinkaVerdict" style="display:none;"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" id="calcHoujinkaBtn" type="button">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          税負担を比較する
+        </button>
+      </div>
+      <div class="note-box"><strong>ご注意：</strong>本シミュレーションは基礎控除・青色申告特別控除・社会保険料・法人の設立維持コスト等を考慮しない簡易目安です。実際の法人化の判断には、所得の種類・資産構成・将来の相続まで含めた個別の検討が必要です。詳しくは税理士にご相談ください。</div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0;" id="related">
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-eyebrow">NEXT STEP</span>
+        <h2 class="panel-title">関連する診断ツール</h2>
+        <p class="panel-desc">法人化の目安が分かったら、他の視点からも経営状況を確認してみましょう。</p>
+      </div>
+      <div class="related-grid">
+        <a class="related-card" href="exit.html">
+          <span class="rc-title">出口戦略診断</span>
+          <span class="rc-desc">継続・売却・承継などの方向性を整理します。</span>
+          <span class="rc-cta">診断する →</span>
+        </a>
+        <a class="related-card" href="cf.html">
+          <span class="rc-title">物件別キャッシュフロー診断</span>
+          <span class="rc-desc">所有物件ごとの収益性を比較します。</span>
+          <span class="rc-cta">診断する →</span>
+        </a>
+        <a class="related-card" href="migakiage.html">
+          <span class="rc-title">不動産経営の磨き上げ診断</span>
+          <span class="rc-desc">経営全体を5つの視点で整理します。</span>
+          <span class="rc-cta">診断する →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="f-brand">不動産経営の磨き上げツール</div>
+  <p>本ツールの診断結果は一般的な目安であり、個別の税務上の判断には税理士への相談をおすすめします。</p>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  function yen(n){ if(!isFinite(n)) return "—"; return Math.round(n).toLocaleString("ja-JP") + " 円"; }
+  function num(id){ var v = parseFloat(document.getElementById(id).value); return isFinite(v) ? v : 0; }
+
+  // 課税所得（円）→ 所得税額（円）の簡易速算表（2024年時点の一般的な税率テーブル）
+  function incomeTax(taxableIncomeYen){
+    var man = taxableIncomeYen / 10000;
+    var table = [
+      {max: 195, rate: 0.05, deduct: 0},
+      {max: 330, rate: 0.10, deduct: 9.75},
+      {max: 695, rate: 0.20, deduct: 42.75},
+      {max: 900, rate: 0.23, deduct: 63.6},
+      {max: 1800, rate: 0.33, deduct: 153.6},
+      {max: 4000, rate: 0.40, deduct: 279.6},
+      {max: Infinity, rate: 0.45, deduct: 479.6}
+    ];
+    for (var i=0;i<table.length;i++){
+      if (man <= table[i].max){
+        return Math.max(0, man*table[i].rate - table[i].deduct) * 10000;
+      }
+    }
+  }
+
+  function personalTax(taxableIncomeYen){
+    var it = incomeTax(taxableIncomeYen);
+    var resident = taxableIncomeYen * 0.10;
+    return { incomeTax: it, residentTax: resident, total: it + resident };
+  }
+
+  // 法人の概算実効税率（中小企業の目安：800万円以下は約23%、超過部分は約34%）
+  function corporateTax(taxableIncomeYen){
+    var border = 8000000;
+    if (taxableIncomeYen <= border){
+      return taxableIncomeYen * 0.23;
+    }
+    return border * 0.23 + (taxableIncomeYen - border) * 0.34;
+  }
+
+  document.getElementById("calcHoujinkaBtn").addEventListener("click", function(){
+    var income = num("taxableIncome");
+    if (income <= 0){
+      alert("不動産所得の年間課税所得を入力してください。");
+      return;
+    }
+
+    var personal = personalTax(income);
+    var corporate = corporateTax(income);
+
+    var rows = "";
+    rows += "<tr><td class='row-label'>個人（所得税＋住民税）</td><td class='highlight'>" + yen(personal.total) + "</td><td>" + (personal.total/income*100).toFixed(1) + " %</td></tr>";
+    rows += "<tr><td class='row-label'>　うち所得税</td><td>" + yen(personal.incomeTax) + "</td><td>—</td></tr>";
+    rows += "<tr><td class='row-label'>　うち住民税（概算10%）</td><td>" + yen(personal.residentTax) + "</td><td>—</td></tr>";
+    rows += "<tr><td class='row-label'>法人（法人税等の概算）</td><td class='highlight'>" + yen(corporate) + "</td><td>" + (corporate/income*100).toFixed(1) + " %</td></tr>";
+
+    document.getElementById("houjinkaTableBody").innerHTML = rows;
+    document.getElementById("houjinkaResultBox").style.display = "block";
+
+    var diff = personal.total - corporate;
+    document.getElementById("diffResultBox").style.display = "block";
+    document.getElementById("diffValue").textContent = (diff >= 0 ? "個人の方が " : "法人の方が ") + yen(Math.abs(diff)) + " 多い";
+    document.getElementById("diffSub").textContent = "年間の税負担の差（目安）";
+
+    var verdict = document.getElementById("houjinkaVerdict");
+    var cls, html;
+    if (income < 7000000){
+      cls = "v-good";
+      html = "<div class='v-icon'><svg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M20 6L9 17l-5-5' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/></svg></div><div><p class='v-title'>現状は個人所有のままでも税負担面の差は小さい水準です</p><p>所得規模がこのまま増えていく見込みがあれば、将来的な法人化のタイミングを検討する余地があります。</p></div>";
+    } else if (income < 9000000){
+      cls = "v-warn";
+      html = "<div class='v-icon'><svg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M12 9v4M12 17h.01M10.29 3.86l-8.18 14.18A1 1 0 003 19.5h18a1 1 0 00.89-1.46L13.71 3.86a1 1 0 00-1.42 0z' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg></div><div><p class='v-title'>個人と法人の税負担が近づいてくる水準です</p><p>所得が今後さらに増える見込みであれば、法人化の検討を始めるタイミングとして適切な水準です。</p></div>";
+    } else {
+      cls = "v-bad";
+      html = "<div class='v-icon'><svg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M12 9v4M12 17h.01M10.29 3.86l-8.18 14.18A1 1 0 003 19.5h18a1 1 0 00.89-1.46L13.71 3.86a1 1 0 00-1.42 0z' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg></div><div><p class='v-title'>法人化による税負担軽減のメリットが大きい水準です</p><p>法人化を具体的に検討すべき所得規模です。設立コストや将来の相続も含め、税理士への相談をおすすめします。</p></div>";
+    }
+    verdict.className = "verdict " + cls;
+    verdict.innerHTML = html;
+    verdict.style.display = "flex";
+  });
+})();
+</script>
+</body>
+</html>

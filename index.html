@@ -3,163 +3,604 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>不動産経営の磨き上げ診断ツール Ver.1</title>
+<title>不動産経営の磨き上げツール｜不動産を次世代と地域の未来に残す</title>
+<meta name="description" content="不動産オーナーのための診断ツール集。見える化・原因・基準・あるべき未来・行動計画という「磨き上げ」の考え方で、不動産経営を次世代と地域の未来に残します。">
 <style>
-body{margin:0;font-family:"Yu Gothic","Meiryo",sans-serif;background:#f4f8f9;color:#1f2933}
-header{background:#1f5f73;color:white;text-align:center;padding:26px 15px}
-header h1{margin:0;font-size:24px}
-header p{margin:8px 0 0;font-size:14px}
-main{max-width:1100px;margin:24px auto;padding:0 15px 40px}
-.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px}
-.flow div{background:white;border:1px solid #d5e3e6;border-radius:12px;padding:12px;text-align:center;color:#1f5f73;font-weight:bold}
-.layout{display:grid;grid-template-columns:1fr 1fr;gap:22px}
-section{background:white;border-radius:14px;padding:22px;box-shadow:0 4px 14px rgba(0,0,0,.06)}
-h2{color:#1f5f73;margin-top:0;border-bottom:2px solid #e3eff2;padding-bottom:8px}
-label{display:block;margin-top:14px;font-weight:bold;font-size:14px}
-.hint{display:block;font-size:12px;color:#667085;font-weight:normal}
-input,select,textarea{width:100%;box-sizing:border-box;margin-top:6px;padding:10px;border:1px solid #cfdce0;border-radius:8px;font-size:15px;font-family:inherit}
-textarea{min-height:78px;resize:vertical}
-.buttons{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
-button{border:none;border-radius:999px;padding:11px 18px;font-weight:bold;cursor:pointer}
-.main-btn{background:#1f5f73;color:white}
-.print-btn{background:#2f7f6f;color:white}
-.reset-btn{background:#e8f3f5;color:#1f5f73}
-.sheet{border:1px solid #d5e3e6;border-radius:12px;padding:18px;background:white}
-.sheet-title{text-align:center;color:#1f5f73;border-bottom:3px solid #1f5f73;padding-bottom:10px}
-.meta{background:#e8f3f5;border-radius:10px;padding:12px;display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px;margin:14px 0}
-.item{border:1px solid #d5e3e6;border-left:5px solid #1f5f73;border-radius:8px;padding:10px;margin-top:10px;min-height:58px}
-.item h3{margin:0 0 4px;color:#1f5f73;font-size:14px}
-.item p{margin:0;white-space:pre-wrap;font-size:13.5px}
-.footer{margin-top:14px;padding-top:10px;border-top:1px dashed #cfdce0;text-align:center;color:#667085;font-size:12px}
-@media(max-width:850px){.layout{grid-template-columns:1fr}.flow{grid-template-columns:repeat(2,1fr)}.flow div:last-child{grid-column:span 2}}
-@media print{
-header,.flow,.form-area,.preview-title,.buttons{display:none}
-body{background:white}
-main{margin:0;padding:0;max-width:none}
-.layout{display:block}
-section{box-shadow:none;padding:0}
-.sheet{width:210mm;min-height:297mm;box-sizing:border-box;border:none;padding:12mm}
-@page{size:A4;margin:8mm}
-}
+  :root{
+    --navy-950:#0b1e33;
+    --navy-900:#102943;
+    --navy-800:#15324f;
+    --navy-700:#1d4266;
+    --blue-600:#2e6fa6;
+    --blue-500:#3f8fd1;
+    --gold-500:#c7a356;
+    --gold-300:#e3c98a;
+    --paper:#f5f7fa;
+    --paper-warm:#eef2f6;
+    --ink-900:#142535;
+    --ink-600:#4d5d6e;
+    --ink-400:#7c8a98;
+    --line:#dde4eb;
+    --white:#ffffff;
+    --radius-lg:18px;
+    --radius-md:12px;
+    --shadow-soft:0 10px 30px -12px rgba(11,30,51,0.18);
+    --shadow-card:0 1px 2px rgba(11,30,51,0.04), 0 8px 24px -10px rgba(11,30,51,0.12);
+    --serif: "Shippori Mincho", "Noto Serif JP", "Hiragino Mincho ProN", serif;
+    --sans: "Zen Kaku Gothic New", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+  }
+
+  @import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:var(--sans);
+    color:var(--ink-900);
+    background:var(--paper);
+    -webkit-font-smoothing:antialiased;
+    line-height:1.7;
+  }
+  img,svg{display:block;}
+  a{color:inherit;}
+
+  .skip-link{
+    position:absolute; left:-999px; top:0;
+    background:var(--navy-900); color:#fff; padding:8px 14px; border-radius:8px; z-index:999;
+  }
+  .skip-link:focus{ left:8px; top:8px; }
+
+  /* ===== Header ===== */
+  header.site{
+    position:relative;
+    background:
+      radial-gradient(1200px 480px at 12% -10%, rgba(63,143,209,0.22), transparent 60%),
+      radial-gradient(900px 420px at 95% 0%, rgba(199,163,86,0.16), transparent 55%),
+      linear-gradient(165deg, var(--navy-950) 0%, var(--navy-900) 48%, var(--navy-800) 100%);
+    color:#fff;
+    overflow:hidden;
+  }
+  header.site::after{
+    content:"";
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(115deg, transparent 38%, rgba(255,255,255,0.05) 46%, transparent 54%);
+    pointer-events:none;
+  }
+  .header-inner{
+    max-width:1080px; margin:0 auto;
+    padding:30px 24px 70px;
+    position:relative; z-index:1;
+  }
+  .brand-row{
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+    margin-bottom:46px;
+  }
+  .brand{
+    display:flex; align-items:center; gap:10px;
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:15px;
+    letter-spacing:.06em;
+    color:rgba(255,255,255,0.86);
+  }
+  .brand .mark{
+    width:30px; height:30px;
+    border-radius:50%;
+    background:linear-gradient(140deg, var(--gold-300), var(--gold-500) 60%, #9a7a37);
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--serif);
+    font-weight:800; font-size:13px; color:var(--navy-950);
+    box-shadow:0 0 0 4px rgba(255,255,255,0.06);
+    flex-shrink:0;
+  }
+  .brand-sub{
+    font-size:12px; color:rgba(255,255,255,0.55); letter-spacing:.04em;
+  }
+
+  .hero-kicker{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:12.5px; letter-spacing:.14em;
+    color:var(--gold-300);
+    margin-bottom:18px;
+    font-weight:500;
+  }
+  .hero-kicker .rule{ width:28px; height:1px; background:var(--gold-300); display:inline-block; }
+
+  h1.hero-title{
+    font-family:var(--serif);
+    font-weight:800;
+    font-size:clamp(28px, 5vw, 46px);
+    line-height:1.45;
+    margin:0 0 22px;
+    letter-spacing:.01em;
+  }
+  h1.hero-title .accent{
+    background:linear-gradient(95deg, var(--gold-300), var(--gold-500));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+
+  p.hero-lead{
+    font-size:clamp(15px, 2.2vw, 18px);
+    color:rgba(255,255,255,0.82);
+    max-width:560px;
+    margin:0 0 36px;
+  }
+
+  /* 磨き上げ process strip */
+  .process-strip{
+    display:flex;
+    flex-wrap:wrap;
+    gap:0;
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:16px;
+    overflow:hidden;
+    background:rgba(255,255,255,0.04);
+    backdrop-filter:blur(2px);
+  }
+  .process-step{
+    flex:1 1 110px;
+    min-width:96px;
+    padding:16px 14px;
+    text-align:center;
+    position:relative;
+    border-right:1px solid rgba(255,255,255,0.1);
+  }
+  .process-step:last-child{ border-right:none; }
+  .process-step .kana{
+    font-family:var(--serif);
+    font-weight:800;
+    font-size:22px;
+    color:var(--gold-300);
+    display:block;
+    margin-bottom:6px;
+  }
+  .process-step .label{
+    font-size:11.5px;
+    color:rgba(255,255,255,0.72);
+    letter-spacing:.02em;
+    display:block;
+  }
+  .process-step::before{
+    content:"";
+    position:absolute; left:0; top:0; bottom:0; width:2px;
+    background:linear-gradient(180deg, var(--gold-300), transparent);
+    opacity:0;
+    transition:opacity .25s;
+  }
+  .process-step:hover::before{ opacity:1; }
+
+  /* wave divider */
+  .wave-divider{
+    display:block; width:100%; height:46px; margin-top:-2px;
+  }
+
+  /* ===== Main ===== */
+  main{ background:var(--paper); }
+
+  .section{ max-width:1080px; margin:0 auto; padding:64px 24px; }
+  .section.tight-top{ padding-top:8px; }
+
+  .section-head{ margin-bottom:36px; max-width:640px; }
+  .section-eyebrow{
+    font-size:12px; letter-spacing:.14em; color:var(--blue-600);
+    font-weight:700; margin-bottom:10px; display:block;
+  }
+  .section-title{
+    font-family:var(--serif);
+    font-weight:700;
+    font-size:clamp(22px,3.4vw,28px);
+    color:var(--navy-900);
+    margin:0 0 12px;
+  }
+  .section-desc{ color:var(--ink-600); font-size:15px; margin:0; }
+
+  /* ===== Tool Cards Grid ===== */
+  .tool-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
+    gap:20px;
+  }
+
+  .tool-card{
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:var(--radius-lg);
+    padding:26px 24px 24px;
+    box-shadow:var(--shadow-card);
+    display:flex;
+    flex-direction:column;
+    text-decoration:none;
+    position:relative;
+    overflow:hidden;
+    transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+  }
+  .tool-card::before{
+    content:"";
+    position:absolute; top:0; left:0; right:0; height:3px;
+    background:linear-gradient(90deg, var(--blue-500), var(--gold-500));
+    transform:scaleX(0);
+    transform-origin:left;
+    transition:transform .3s ease;
+  }
+  .tool-card:hover, .tool-card:focus-visible{
+    transform:translateY(-4px);
+    box-shadow:0 18px 38px -16px rgba(16,41,67,0.28);
+    border-color:rgba(63,143,209,0.35);
+  }
+  .tool-card:hover::before, .tool-card:focus-visible::before{ transform:scaleX(1); }
+  .tool-card:focus-visible{ outline:2px solid var(--blue-500); outline-offset:3px; }
+
+  .card-top{
+    display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
+    margin-bottom:16px;
+  }
+  .card-number{
+    font-family:var(--serif);
+    font-size:13px;
+    color:var(--ink-400);
+    letter-spacing:.05em;
+  }
+  .card-icon{
+    width:46px; height:46px;
+    border-radius:12px;
+    background:linear-gradient(150deg, var(--navy-800), var(--navy-900));
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .card-icon svg{ width:24px; height:24px; }
+
+  .card-status{
+    display:inline-flex; align-items:center; gap:5px;
+    font-size:11px; font-weight:700; letter-spacing:.03em;
+    padding:4px 10px; border-radius:999px;
+    align-self:flex-start;
+    white-space:nowrap;
+  }
+  .status-ready{ background:#eaf4ec; color:#2c7a4b; }
+  .status-soon{ background:var(--paper-warm); color:var(--ink-400); }
+
+  .tool-card h3{
+    font-family:var(--serif);
+    font-size:18.5px;
+    font-weight:700;
+    color:var(--navy-900);
+    margin:0 0 8px;
+    line-height:1.5;
+  }
+  .tool-card p.tool-desc{
+    font-size:13.5px;
+    color:var(--ink-600);
+    margin:0 0 18px;
+    flex-grow:1;
+  }
+  .card-cta{
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:13.5px; font-weight:700;
+    color:var(--blue-600);
+    margin-top:auto;
+  }
+  .card-cta svg{ width:14px; height:14px; transition:transform .2s; }
+  .tool-card:hover .card-cta svg{ transform:translateX(3px); }
+  .tool-card[aria-disabled="true"]{
+    cursor:default;
+    opacity:0.78;
+  }
+  .tool-card[aria-disabled="true"]:hover{ transform:none; box-shadow:var(--shadow-card); }
+  .tool-card[aria-disabled="true"] .card-cta{ color:var(--ink-400); }
+
+  /* ===== Flow / funnel section ===== */
+  .funnel-wrap{
+    background:linear-gradient(180deg, var(--paper-warm), var(--paper));
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .funnel-steps{
+    display:flex; flex-wrap:wrap; gap:14px; align-items:stretch;
+  }
+  .funnel-step{
+    flex:1 1 220px;
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:var(--radius-md);
+    padding:22px 20px;
+    position:relative;
+  }
+  .funnel-step .f-eyebrow{
+    font-size:11px; color:var(--ink-400); letter-spacing:.08em; font-weight:700;
+    margin-bottom:8px; display:block;
+  }
+  .funnel-step h4{
+    font-family:var(--serif);
+    font-size:16px; margin:0 0 8px; color:var(--navy-900);
+  }
+  .funnel-step p{ font-size:13px; color:var(--ink-600); margin:0; }
+  .funnel-arrow{
+    display:flex; align-items:center; justify-content:center;
+    color:var(--gold-500);
+    flex:0 0 auto;
+    padding:0 2px;
+  }
+  .funnel-arrow svg{ width:20px; height:20px; }
+  @media (max-width:720px){
+    .funnel-arrow{ transform:rotate(90deg); margin:-4px 0; }
+  }
+
+  /* ===== About / trust section ===== */
+  .about-card{
+    background:var(--navy-900);
+    border-radius:var(--radius-lg);
+    padding:40px clamp(24px,5vw,48px);
+    color:#fff;
+    display:grid;
+    grid-template-columns:1fr;
+    gap:28px;
+    position:relative;
+    overflow:hidden;
+  }
+  .about-card::before{
+    content:"";
+    position:absolute; right:-60px; top:-60px;
+    width:220px; height:220px; border-radius:50%;
+    background:radial-gradient(circle, rgba(199,163,86,0.18), transparent 70%);
+  }
+  .about-card .a-eyebrow{
+    font-size:12px; letter-spacing:.12em; color:var(--gold-300); font-weight:700; margin-bottom:14px; display:block;
+  }
+  .about-card h3{
+    font-family:var(--serif); font-size:clamp(19px,2.6vw,23px); margin:0 0 14px; line-height:1.6;
+  }
+  .about-card p{ color:rgba(255,255,255,0.78); font-size:14.5px; margin:0; max-width:680px; }
+  .about-tags{
+    display:flex; flex-wrap:wrap; gap:10px; margin-top:18px;
+  }
+  .about-tags span{
+    font-size:12.5px; padding:6px 13px; border-radius:999px;
+    border:1px solid rgba(255,255,255,0.2); color:rgba(255,255,255,0.85);
+  }
+
+  /* ===== Footer ===== */
+  footer.site{
+    background:var(--navy-950);
+    color:rgba(255,255,255,0.6);
+    padding:32px 24px;
+    text-align:center;
+    font-size:12.5px;
+  }
+  footer.site .f-brand{ color:rgba(255,255,255,0.85); font-weight:700; margin-bottom:6px; }
+  footer.site a{ color:rgba(255,255,255,0.75); text-decoration:underline; text-decoration-color:rgba(255,255,255,0.3); }
+
+  @media (max-width:560px){
+    .header-inner{ padding:24px 18px 56px; }
+    .section{ padding:48px 18px; }
+    .process-step{ flex:1 1 30%; padding:12px 8px; }
+    .process-step .kana{ font-size:18px; }
+    .process-step .label{ font-size:10px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition:none !important; scroll-behavior:auto !important; }
+  }
 </style>
 </head>
 <body>
+<a href="#main" class="skip-link">本文へスキップ</a>
 
-<header>
-<h1>不動産経営の磨き上げ診断ツール Ver.1</h1>
-<p>課題を見える化し、A4一枚の診断シートに整理します。</p>
+<header class="site">
+  <div class="header-inner">
+    <div class="brand-row">
+      <div class="brand">
+        <span class="mark">磨</span>
+        不動産経営の磨き上げ
+      </div>
+      <div class="brand-sub">税理士監修の診断ツール集</div>
+    </div>
+
+    <span class="hero-kicker"><span class="rule"></span>MIGAKIAGE TOOLS</span>
+    <h1 class="hero-title">不動産を、<br class="hide-on-wide-break"><span class="accent">次世代と地域の未来</span>に残す。</h1>
+    <p class="hero-lead">不動産経営の磨き上げツールは、見える化・原因・基準・あるべき未来・行動計画という5つの視点で、あなたの不動産経営を整える診断ツール集です。</p>
+
+    <div class="process-strip" aria-label="不動産経営の磨き上げ　5つのステップ">
+      <div class="process-step"><span class="kana">み</span><span class="label">見える化</span></div>
+      <div class="process-step"><span class="kana">が</span><span class="label">原因を見つける</span></div>
+      <div class="process-step"><span class="kana">き</span><span class="label">基準を決める</span></div>
+      <div class="process-step"><span class="kana">あ</span><span class="label">あるべき未来</span></div>
+      <div class="process-step"><span class="kana">げ</span><span class="label">行動する</span></div>
+    </div>
+  </div>
+
+  <svg class="wave-divider" viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M0,32 C240,68 480,0 720,24 C960,48 1200,8 1440,32 L1440,60 L0,60 Z" fill="#f5f7fa"></path>
+  </svg>
 </header>
 
-<main>
-<div class="flow">
-<div>み<br>見える化</div>
-<div>が<br>原因を見つける</div>
-<div>き<br>基準を決める</div>
-<div>あ<br>あるべき未来</div>
-<div>げ<br>現実に行動</div>
-</div>
+<main id="main">
 
-<div class="layout">
-<section class="form-area">
-<h2>入力フォーム</h2>
+  <section class="section tight-top">
+    <div class="section-head">
+      <span class="section-eyebrow">TOOLS / 診断ツール一覧</span>
+      <h2 class="section-title">気になるテーマから、診断を始める</h2>
+      <p class="section-desc">それぞれ数分の入力で、現状把握のヒントが得られます。まずは「磨き上げ診断」から始めるのがおすすめです。</p>
+    </div>
 
-<label>1. オーナー名<input id="owner" type="text" placeholder="例：山田 太郎"></label>
-<label>2. 物件名<input id="property" type="text" placeholder="例：山田ハイツ"></label>
-<label>3. 物件所在地<input id="address" type="text" placeholder="例：福岡市博多区〇〇"></label>
+    <div class="tool-grid">
 
-<label>4. 物件の種類
-<select id="type">
-<option value="">選択してください</option>
-<option>アパート</option><option>マンション</option><option>店舗</option>
-<option>事務所</option><option>駐車場</option><option>土地</option><option>その他</option>
-</select>
-</label>
+      <!-- 1. 磨き上げ診断 -->
+      <a class="tool-card" href="migakiage.html">
+        <div class="card-top">
+          <span class="card-number">01</span>
+          <span class="card-status status-ready">公開中</span>
+        </div>
+        <div class="card-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 3l2.5 5.5L20 9.5l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-1L12 3z" stroke="#e3c98a" stroke-width="1.4" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3>不動産経営の磨き上げ診断</h3>
+        <p class="tool-desc">経営全体を「見える化・原因・基準・未来・行動」の5視点でチェックし、優先して取り組むべき課題を明らかにします。</p>
+        <span class="card-cta">診断をはじめる
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </a>
 
-<label>5. 現在困っていること
-<span class="hint">例：空室が増えている、手残りが少ない、修繕費が不安、相続が不安</span>
-<textarea id="problem"></textarea></label>
+      <!-- 2. リスク診断 -->
+      <a class="tool-card" href="risk.html">
+        <div class="card-top">
+          <span class="card-number">02</span>
+          <span class="card-status status-ready">公開中</span>
+        </div>
+        <div class="card-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 3l8 4v5c0 5-3.5 7.5-8 9-4.5-1.5-8-4-8-9V7l8-4z" stroke="#9fc3e0" stroke-width="1.4" stroke-linejoin="round"/>
+            <path d="M12 8v5" stroke="#9fc3e0" stroke-width="1.4" stroke-linecap="round"/>
+            <circle cx="12" cy="16" r="0.8" fill="#9fc3e0"/>
+          </svg>
+        </div>
+        <h3>賃貸経営継続診断（火災・地震リスク版）</h3>
+        <p class="tool-desc">火災・地震といった災害リスクに対し、現状の備えと経営継続力を確認し、見直すべきポイントを整理します。</p>
+        <span class="card-cta">診断をはじめる
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </a>
 
-<label>6. 数字で確認したい項目
-<span class="hint">例：物件別キャッシュフロー、家賃相場、借入返済、修繕積立、相続税</span>
-<textarea id="visible"></textarea></label>
+      <!-- 3. 金利シミュレーション -->
+      <a class="tool-card" href="kinri.html">
+        <div class="card-top">
+          <span class="card-number">03</span>
+          <span class="card-status status-ready">公開中</span>
+        </div>
+        <div class="card-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 18l4-5 4 3 5-7 3 3" stroke="#9fc3e0" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M4 20.5h16" stroke="#9fc3e0" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>大規模修繕・借入金利シミュレーション</h3>
+        <p class="tool-desc">金利上昇や大規模修繕の発生が、将来の返済・キャッシュフローにどう影響するかをシミュレーションします。</p>
+        <span class="card-cta">診断をはじめる
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </a>
 
-<label>7. 原因として考えられること<textarea id="cause"></textarea></label>
-<label>8. 判断するために必要な基準<textarea id="standard"></textarea></label>
-<label>9. 将来どうなっていたいか<textarea id="future"></textarea></label>
-<label>10. 今日から取り組む行動<textarea id="action"></textarea></label>
+      <!-- 4. キャッシュフロー診断 -->
+      <a class="tool-card" href="cf.html">
+        <div class="card-top">
+          <span class="card-number">04</span>
+          <span class="card-status status-ready">公開中</span>
+        </div>
+        <div class="card-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="10" width="3.2" height="9" rx="0.6" fill="#9fc3e0"/>
+            <rect x="10.4" y="6" width="3.2" height="13" rx="0.6" fill="#cfe1f0"/>
+            <rect x="16.8" y="13" width="3.2" height="6" rx="0.6" fill="#9fc3e0"/>
+          </svg>
+        </div>
+        <h3>物件別キャッシュフロー診断</h3>
+        <p class="tool-desc">所有物件ごとの収益性とキャッシュフローを比較し、強化すべき物件・見直すべき物件を見える化します。</p>
+        <span class="card-cta">診断をはじめる
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </a>
 
-<div class="buttons">
-<button class="main-btn" onclick="makeSheet()">診断シートを作成</button>
-<button class="print-btn" onclick="window.print()">印刷する</button>
-<button class="reset-btn" onclick="resetForm()">リセット</button>
-</div>
-</section>
+      <!-- 5. 法人化診断 -->
+      <a class="tool-card" href="houjinka.html">
+        <div class="card-top">
+          <span class="card-number">05</span>
+          <span class="card-status status-ready">公開中</span>
+        </div>
+        <div class="card-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="5" y="4" width="14" height="16" rx="1" stroke="#9fc3e0" stroke-width="1.4"/>
+            <path d="M9 8h2M13 8h2M9 12h2M13 12h2M9 16h2M13 16h2" stroke="#9fc3e0" stroke-width="1.3" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>法人化診断</h3>
+        <p class="tool-desc">所得規模や資産構成から、個人所有のままか法人化すべきかの判断材料を整理し、税務上の視点を提示します。</p>
+        <span class="card-cta">診断をはじめる
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </a>
 
-<section>
-<h2 class="preview-title">診断結果プレビュー</h2>
+      <!-- 6. 出口戦略診断 -->
+      <a class="tool-card" href="exit.html">
+        <div class="card-top">
+          <span class="card-number">06</span>
+          <span class="card-status status-ready">公開中</span>
+        </div>
+        <div class="card-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 4H6a1 1 0 00-1 1v14a1 1 0 001 1h3" stroke="#9fc3e0" stroke-width="1.4" stroke-linecap="round"/>
+            <path d="M13 8l5 4-5 4M18 12H9" stroke="#9fc3e0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3>出口戦略診断</h3>
+        <p class="tool-desc">売却・建替・継続保有・資産承継など、将来の選択肢を整理し、今から準備しておくべきことを明らかにします。</p>
+        <span class="card-cta">診断をはじめる
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </a>
 
-<div class="sheet">
-<h2 class="sheet-title">不動産経営の磨き上げ診断シート</h2>
+    </div>
+  </section>
 
-<div class="meta">
-<div><strong>オーナー名：</strong><span id="outOwner">未入力</span></div>
-<div><strong>物件名：</strong><span id="outProperty">未入力</span></div>
-<div><strong>所在地：</strong><span id="outAddress">未入力</span></div>
-<div><strong>種類：</strong><span id="outType">未入力</span></div>
-</div>
+  <div class="funnel-wrap">
+    <section class="section">
+      <div class="section-head">
+        <span class="section-eyebrow">FLOW / ご利用の流れ</span>
+        <h2 class="section-title">無料診断から、個別コンサルティングへ</h2>
+        <p class="section-desc">まずは無料の診断ツールで現状を整理し、必要に応じて専門家による個別サポートにつなげていく流れです。</p>
+      </div>
 
-<div class="item"><h3>1. 現在の課題</h3><p id="outProblem">未入力</p></div>
-<div class="item"><h3>2. 見える化すべき項目</h3><p id="outVisible">未入力</p></div>
-<div class="item"><h3>3. 課題の原因</h3><p id="outCause">未入力</p></div>
-<div class="item"><h3>4. 判断基準</h3><p id="outStandard">未入力</p></div>
-<div class="item"><h3>5. あるべき未来</h3><p id="outFuture">未入力</p></div>
-<div class="item"><h3>6. 行動計画</h3><p id="outAction">未入力</p></div>
+      <div class="funnel-steps">
+        <div class="funnel-step">
+          <span class="f-eyebrow">STEP 1</span>
+          <h4>無料診断</h4>
+          <p>気になるテーマのツールを使い、現状を数値・項目で見える化します。</p>
+        </div>
+        <div class="funnel-arrow" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="funnel-step">
+          <span class="f-eyebrow">STEP 2</span>
+          <h4>磨き上げ診断</h4>
+          <p>経営全体を5つの視点で総合的に診断し、優先課題と判断基準を整理します。</p>
+        </div>
+        <div class="funnel-arrow" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="funnel-step">
+          <span class="f-eyebrow">STEP 3</span>
+          <h4>個別コンサルティング</h4>
+          <p>税理士による個別相談で、相続・法人化・出口戦略など具体的な行動計画に落とし込みます。</p>
+        </div>
+      </div>
+    </section>
+  </div>
 
-<div class="footer">
-み：見える化　が：原因を見つける　き：基準を決める　あ：あるべき未来を描く　げ：現実に行動する
-</div>
-</div>
+  <section class="section">
+    <div class="about-card">
+      <div>
+        <span class="a-eyebrow">ABOUT THIS PROJECT</span>
+        <h3>税理士が、不動産オーナーの「磨き上げ」を支援しています。</h3>
+        <p>相続・法人化・物件別キャッシュフロー・出口戦略・リスクマネジメントといった専門領域を、誰でも使える診断ツールという形にしています。診断結果をもとに、必要な方には個別のご相談も承っています。</p>
+        <div class="about-tags">
+          <span>相続対策</span>
+          <span>法人化支援</span>
+          <span>キャッシュフロー改善</span>
+          <span>出口戦略</span>
+          <span>リスクマネジメント</span>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<div class="buttons">
-<button class="print-btn" onclick="window.print()">このシートを印刷する</button>
-</div>
-</section>
-</div>
 </main>
 
-<script>
-function getValue(id){
-  const v=document.getElementById(id).value.trim();
-  return v===""?"未入力":v;
-}
-
-function makeSheet(){
-  document.getElementById("outOwner").textContent=getValue("owner");
-  document.getElementById("outProperty").textContent=getValue("property");
-  document.getElementById("outAddress").textContent=getValue("address");
-  document.getElementById("outType").textContent=getValue("type");
-  document.getElementById("outProblem").textContent=getValue("problem");
-  document.getElementById("outVisible").textContent=getValue("visible");
-  document.getElementById("outCause").textContent=getValue("cause");
-  document.getElementById("outStandard").textContent=getValue("standard");
-  document.getElementById("outFuture").textContent=getValue("future");
-  document.getElementById("outAction").textContent=getValue("action");
-}
-
-function resetForm(){
-  ["owner","property","address","type","problem","visible","cause","standard","future","action"].forEach(id=>{
-    document.getElementById(id).value="";
-  });
-  makeSheet();
-}
-
-["owner","property","address","type","problem","visible","cause","standard","future","action"].forEach(id=>{
-  document.getElementById(id).addEventListener("input",makeSheet);
-  document.getElementById(id).addEventListener("change",makeSheet);
-});
-
-makeSheet();
-</script>
+<footer class="site">
+  <div class="f-brand">不動産経営の磨き上げツール</div>
+  <p>本ツールの診断結果は一般的な目安であり、個別の税務・法務上の判断には専門家への相談をおすすめします。</p>
+</footer>
 
 </body>
 </html>

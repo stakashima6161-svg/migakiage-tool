@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>不動産経営の磨き上げ診断｜不動産経営の磨き上げツール</title>
+<meta name="description" content="不動産経営の課題を見える化し、原因分析・基準設定・未来設計・行動計画を整理する診断シート。各項目から個別の診断ツールにもつながります。">
+<style>
+  :root{
+    --navy-950:#0b1e33; --navy-900:#102943; --navy-800:#15324f; --navy-700:#1d4266;
+    --blue-600:#2e6fa6; --blue-500:#3f8fd1; --blue-100:#eaf2fa;
+    --gold-500:#c7a356; --gold-300:#e3c98a;
+    --paper:#f5f7fa; --paper-warm:#eef2f6;
+    --ink-900:#142535; --ink-600:#4d5d6e; --ink-400:#7c8a98;
+    --line:#dde4eb; --white:#ffffff;
+    --radius-lg:18px; --radius-md:12px;
+    --shadow-card:0 1px 2px rgba(11,30,51,0.04), 0 8px 24px -10px rgba(11,30,51,0.12);
+    --serif: "Shippori Mincho", "Noto Serif JP", "Hiragino Mincho ProN", serif;
+    --sans: "Zen Kaku Gothic New", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+  }
+  @import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:var(--sans); color:var(--ink-900); background:var(--paper); -webkit-font-smoothing:antialiased; line-height:1.7; }
+  a{color:inherit;}
+  .skip-link{ position:absolute; left:-999px; top:0; background:var(--navy-900); color:#fff; padding:8px 14px; border-radius:8px; z-index:999; }
+  .skip-link:focus{ left:8px; top:8px; }
+
+  /* ===== Header ===== */
+  header.site{
+    position:relative;
+    background:
+      radial-gradient(1200px 480px at 12% -10%, rgba(63,143,209,0.22), transparent 60%),
+      radial-gradient(900px 420px at 95% 0%, rgba(199,163,86,0.16), transparent 55%),
+      linear-gradient(165deg, var(--navy-950) 0%, var(--navy-900) 48%, var(--navy-800) 100%);
+    color:#fff; overflow:hidden;
+  }
+  .header-inner{ max-width:1040px; margin:0 auto; padding:24px 24px 56px; position:relative; z-index:1; }
+  .brand-row{ display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:34px; flex-wrap:wrap; }
+  .brand{ display:flex; align-items:center; gap:10px; font-family:var(--serif); font-weight:600; font-size:14.5px; letter-spacing:.04em; color:rgba(255,255,255,0.86); text-decoration:none; }
+  .brand .mark{ width:28px; height:28px; border-radius:50%; background:linear-gradient(140deg, var(--gold-300), var(--gold-500) 60%, #9a7a37); display:flex; align-items:center; justify-content:center; font-family:var(--serif); font-weight:800; font-size:12px; color:var(--navy-950); flex-shrink:0; }
+  .back-link{ display:inline-flex; align-items:center; gap:6px; font-size:13px; color:rgba(255,255,255,0.7); text-decoration:none; }
+  .back-link svg{ width:14px; height:14px; }
+  .back-link:hover{ color:#fff; }
+  .hero-kicker{ display:inline-flex; align-items:center; gap:8px; font-size:12.5px; letter-spacing:.12em; color:var(--gold-300); margin-bottom:16px; font-weight:500; }
+  .hero-kicker .rule{ width:24px; height:1px; background:var(--gold-300); display:inline-block; }
+  h1.hero-title{ font-family:var(--serif); font-weight:800; font-size:clamp(24px, 4.4vw, 36px); line-height:1.5; margin:0 0 16px; }
+  p.hero-lead{ font-size:clamp(14px, 1.9vw, 16.5px); color:rgba(255,255,255,0.82); max-width:620px; margin:0 0 30px; }
+
+  .process-strip{ display:flex; flex-wrap:wrap; gap:0; border:1px solid rgba(255,255,255,0.14); border-radius:16px; overflow:hidden; background:rgba(255,255,255,0.04); }
+  .process-step{ flex:1 1 110px; min-width:90px; padding:14px 10px; text-align:center; position:relative; border-right:1px solid rgba(255,255,255,0.1); }
+  .process-step:last-child{ border-right:none; }
+  .process-step .kana{ font-family:var(--serif); font-weight:800; font-size:20px; color:var(--gold-300); display:block; margin-bottom:5px; }
+  .process-step .label{ font-size:11px; color:rgba(255,255,255,0.72); letter-spacing:.02em; display:block; }
+
+  .wave-divider{ display:block; width:100%; height:40px; margin-top:-2px; }
+
+  /* ===== Layout ===== */
+  main{ background:var(--paper); }
+  .section{ max-width:1040px; margin:0 auto; padding:48px 24px; }
+  .section.tight-top{ padding-top:0; margin-top:-28px; }
+
+  .toc{ display:flex; flex-wrap:wrap; gap:10px; background:var(--white); border:1px solid var(--line); border-radius:var(--radius-md); padding:16px 18px; box-shadow:var(--shadow-card); position:relative; z-index:2; }
+  .toc a{ font-size:12.5px; font-weight:700; color:var(--blue-600); text-decoration:none; padding:7px 13px; border-radius:999px; background:var(--blue-100); }
+  .toc a:hover{ background:var(--blue-500); color:#fff; }
+
+  .layout{ display:grid; grid-template-columns:1.05fr 0.95fr; gap:24px; align-items:start; }
+  @media (max-width:880px){ .layout{ grid-template-columns:1fr; } }
+
+  .panel{ background:var(--white); border:1px solid var(--line); border-radius:var(--radius-lg); box-shadow:var(--shadow-card); padding:26px clamp(16px,3vw,30px); margin-bottom:24px; scroll-margin-top:20px; }
+  .panel-head{ margin-bottom:20px; }
+  .panel-eyebrow{ font-size:11.5px; letter-spacing:.12em; color:var(--blue-600); font-weight:700; margin-bottom:8px; display:block; }
+  .panel-title{ font-family:var(--serif); font-weight:700; font-size:clamp(18px,2.6vw,21px); color:var(--navy-900); margin:0 0 8px; }
+  .panel-desc{ color:var(--ink-600); font-size:13.5px; margin:0; }
+
+  /* form fields */
+  .field{ margin-bottom:18px; }
+  .field label{ display:block; font-size:13px; font-weight:700; color:var(--navy-800); margin-bottom:7px; }
+  .field .hint{ display:block; font-size:11.5px; color:var(--ink-400); font-weight:400; margin-top:3px; }
+  .field input[type="text"], .field select, .field textarea{
+    width:100%; padding:11px 13px; border:1.5px solid var(--line); border-radius:10px;
+    font-size:14.5px; font-family:var(--sans); color:var(--ink-900); background:var(--white);
+    transition:border-color .15s, box-shadow .15s;
+  }
+  .field textarea{ min-height:84px; resize:vertical; line-height:1.6; }
+  .field input:focus, .field select:focus, .field textarea:focus{ outline:none; border-color:var(--blue-500); box-shadow:0 0 0 3px rgba(63,143,209,0.18); }
+
+  .meta-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(190px,1fr)); gap:14px 18px; }
+
+  .migaki-block{
+    border-left:4px solid var(--gold-500); border-radius:0 12px 12px 0; background:var(--paper-warm);
+    padding:16px 18px 18px; margin-bottom:16px;
+  }
+  .migaki-block-head{ display:flex; align-items:baseline; gap:10px; margin-bottom:10px; }
+  .migaki-kana{ font-family:var(--serif); font-weight:800; font-size:20px; color:var(--gold-500); line-height:1; }
+  .migaki-block-head h3{ font-size:14px; font-weight:700; color:var(--navy-900); margin:0; }
+  .migaki-block textarea{ background:var(--white); }
+
+  .related-mini{
+    display:inline-flex; align-items:center; gap:6px; margin-top:10px; font-size:12px; font-weight:700;
+    color:var(--blue-600); text-decoration:none; padding:7px 12px; border-radius:999px; background:var(--blue-100);
+    transition:background .15s, color .15s;
+  }
+  .related-mini:hover{ background:var(--blue-500); color:#fff; }
+  .related-mini svg{ width:12px; height:12px; }
+  .related-mini.disabled{ background:var(--paper-warm); color:var(--ink-400); cursor:default; }
+  .related-mini.disabled:hover{ background:var(--paper-warm); color:var(--ink-400); }
+
+  .btn-row{ display:flex; gap:12px; flex-wrap:wrap; margin-top:6px; }
+  .btn{ appearance:none; border:none; cursor:pointer; font-family:var(--sans); font-weight:700; font-size:14px; padding:13px 24px; border-radius:10px; display:inline-flex; align-items:center; gap:8px; transition:transform .15s, box-shadow .15s, background .15s; }
+  .btn:active{ transform:translateY(1px); }
+  .btn-primary{ background:linear-gradient(135deg, var(--blue-600), var(--navy-800)); color:#fff; box-shadow:0 8px 20px -8px rgba(46,111,166,0.5); }
+  .btn-primary:hover{ box-shadow:0 12px 26px -8px rgba(46,111,166,0.6); }
+  .btn-secondary{ background:var(--white); color:var(--navy-800); border:1.5px solid var(--line); }
+  .btn-secondary:hover{ border-color:var(--blue-500); color:var(--blue-600); }
+  .btn-ghost{ background:transparent; color:var(--ink-400); border:1.5px dashed var(--line); }
+  .btn-ghost:hover{ color:var(--ink-600); border-color:var(--ink-400); }
+  .btn svg{ width:16px; height:16px; }
+
+  /* preview sheet */
+  .sheet{
+    background:var(--white); border:1px solid var(--line); border-radius:var(--radius-lg);
+    box-shadow:var(--shadow-card); padding:30px clamp(18px,4vw,34px); position:sticky; top:20px;
+  }
+  .sheet-title{
+    font-family:var(--serif); font-weight:800; font-size:18px; text-align:center; color:var(--navy-900);
+    margin:0 0 18px; padding-bottom:14px; border-bottom:3px solid var(--navy-900); position:relative;
+  }
+  .sheet-meta{ background:var(--paper-warm); border-radius:10px; padding:14px 16px; display:grid; grid-template-columns:1fr 1fr; gap:8px 14px; font-size:12.5px; margin-bottom:16px; }
+  .sheet-meta div span.k{ color:var(--ink-400); font-weight:700; margin-right:4px; }
+  .sheet-meta div span.v{ color:var(--navy-900); font-weight:700; }
+
+  .sheet-item{ border:1px solid var(--line); border-left:4px solid var(--blue-500); border-radius:8px; padding:12px 14px; margin-top:10px; min-height:50px; }
+  .sheet-item.gold{ border-left-color:var(--gold-500); }
+  .sheet-item h4{ margin:0 0 4px; color:var(--navy-900); font-size:12.5px; font-weight:700; display:flex; align-items:center; gap:6px; }
+  .sheet-item h4 .kana-mini{ font-family:var(--serif); color:var(--gold-500); font-weight:800; }
+  .sheet-item p{ margin:0; white-space:pre-wrap; font-size:13px; color:var(--ink-900); }
+  .sheet-item p.empty{ color:var(--ink-400); }
+
+  .sheet-footer{ margin-top:18px; padding-top:14px; border-top:1px dashed var(--line); text-align:center; color:var(--ink-400); font-size:11px; letter-spacing:.02em; }
+
+  /* print */
+  @media print{
+    header.site, .toc, .form-panel .panel-desc, .btn-row, .wave-divider, footer.site, .related-mini { display:none !important; }
+    body{ background:#fff; }
+    main{ background:#fff; }
+    .section{ padding:0; margin:0; max-width:none; }
+    .layout{ display:block; }
+    .panel{ box-shadow:none; border:none; padding:0; }
+    .form-panel{ display:none; }
+    .sheet{ box-shadow:none; border:none; position:static; width:190mm; margin:0 auto; }
+    @page{ size:A4; margin:12mm; }
+  }
+
+  footer.site{ background:var(--navy-950); color:rgba(255,255,255,0.6); padding:30px 24px; text-align:center; font-size:12.5px; }
+  footer.site .f-brand{ color:rgba(255,255,255,0.85); font-weight:700; margin-bottom:6px; }
+
+  @media (max-width:560px){
+    .header-inner{ padding:20px 18px 48px; }
+    .section{ padding:32px 18px; }
+    .panel{ padding:20px 16px; }
+    .process-step{ flex:1 1 30%; padding:10px 6px; }
+    .process-step .kana{ font-size:17px; }
+    .process-step .label{ font-size:9.5px; }
+  }
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; scroll-behavior:auto !important; } }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">本文へスキップ</a>
+
+<header class="site">
+  <div class="header-inner">
+    <div class="brand-row">
+      <a class="brand" href="index.html"><span class="mark">磨</span>不動産経営の磨き上げ</a>
+      <a class="back-link" href="index.html">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        ツール一覧へ戻る
+      </a>
+    </div>
+    <span class="hero-kicker"><span class="rule"></span>01 / MIGAKIAGE DIAGNOSIS</span>
+    <h1 class="hero-title">不動産経営の磨き上げ診断</h1>
+    <p class="hero-lead">課題を見える化し、原因分析・基準設定・未来設計・行動計画をA4一枚の診断シートに整理します。各項目からは、関連する個別診断ツールにも進めます。</p>
+
+    <div class="process-strip" aria-label="不動産経営の磨き上げ　5つのステップ">
+      <div class="process-step"><span class="kana">み</span><span class="label">見える化</span></div>
+      <div class="process-step"><span class="kana">が</span><span class="label">原因を見つける</span></div>
+      <div class="process-step"><span class="kana">き</span><span class="label">基準を決める</span></div>
+      <div class="process-step"><span class="kana">あ</span><span class="label">あるべき未来</span></div>
+      <div class="process-step"><span class="kana">げ</span><span class="label">現実に行動</span></div>
+    </div>
+  </div>
+  <svg class="wave-divider" viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M0,32 C240,68 480,0 720,24 C960,48 1200,8 1440,32 L1440,60 L0,60 Z" fill="#f5f7fa"></path>
+  </svg>
+</header>
+
+<main id="main">
+  <div class="section tight-top">
+    <nav class="toc" aria-label="ツール内ナビゲーション">
+      <a href="#basic">基本情報</a>
+      <a href="#mi">み：見える化</a>
+      <a href="#ga">が：原因</a>
+      <a href="#ki">き：基準</a>
+      <a href="#a">あ：あるべき未来</a>
+      <a href="#ge">げ：行動</a>
+    </nav>
+  </div>
+
+  <section class="section" style="padding-top:0;">
+    <div class="layout">
+
+      <!-- ===== 左カラム：入力フォーム ===== -->
+      <div class="form-panel">
+
+        <div class="panel" id="basic">
+          <div class="panel-head">
+            <span class="panel-eyebrow">基本情報</span>
+            <h2 class="panel-title">オーナー・物件の基本情報</h2>
+            <p class="panel-desc">診断シートのヘッダーに表示されます。</p>
+          </div>
+          <div class="meta-grid">
+            <div class="field">
+              <label for="owner">オーナー名</label>
+              <input type="text" id="owner" placeholder="例：山田 太郎">
+            </div>
+            <div class="field">
+              <label for="property">物件名</label>
+              <input type="text" id="property" placeholder="例：山田ハイツ">
+            </div>
+            <div class="field">
+              <label for="address">物件所在地</label>
+              <input type="text" id="address" placeholder="例：福岡市博多区〇〇">
+            </div>
+            <div class="field">
+              <label for="type">物件の種類</label>
+              <select id="type">
+                <option value="">選択してください</option>
+                <option>アパート</option><option>マンション</option><option>店舗</option>
+                <option>事務所</option><option>駐車場</option><option>土地</option><option>その他</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel" id="mi">
+          <div class="panel-head">
+            <span class="panel-eyebrow">STEP み — 見える化</span>
+            <h2 class="panel-title">現状を見える化する</h2>
+            <p class="panel-desc">今困っていること、数字で確認したいことを書き出してみましょう。</p>
+          </div>
+
+          <div class="migaki-block">
+            <div class="migaki-block-head"><span class="migaki-kana">み</span><h3>1. 現在困っていること</h3></div>
+            <textarea id="problem" placeholder="例：空室が増えている、手残りが少ない、修繕費が不安、相続が不安"></textarea>
+          </div>
+
+          <div class="migaki-block">
+            <div class="migaki-block-head"><span class="migaki-kana">み</span><h3>2. 数字で確認したい項目</h3></div>
+            <textarea id="visible" placeholder="例：物件別キャッシュフロー、家賃相場、借入返済、修繕積立、相続税"></textarea>
+            <a class="related-mini" href="cf.html">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              物件別キャッシュフロー診断を見る
+            </a>
+            <a class="related-mini" href="risk.html">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              火災・地震リスク診断を見る
+            </a>
+            <a class="related-mini" href="kinri.html">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              金利・修繕シミュレーションを見る
+            </a>
+          </div>
+        </div>
+
+        <div class="panel" id="ga">
+          <div class="panel-head">
+            <span class="panel-eyebrow">STEP が — 原因を見つける</span>
+            <h2 class="panel-title">原因を見つける</h2>
+            <p class="panel-desc">見えてきた課題について、考えられる原因を整理します。</p>
+          </div>
+          <div class="migaki-block">
+            <div class="migaki-block-head"><span class="migaki-kana">が</span><h3>3. 課題の原因として考えられること</h3></div>
+            <textarea id="cause" placeholder="例：賃料が相場より高い、設備が古く競争力が落ちている、保険金額の見直し不足"></textarea>
+          </div>
+        </div>
+
+        <div class="panel" id="ki">
+          <div class="panel-head">
+            <span class="panel-eyebrow">STEP き — 基準を決める</span>
+            <h2 class="panel-title">判断するための基準を決める</h2>
+            <p class="panel-desc">何を基準に判断するか（許容できる空室率、最低限の利回りなど）を明確にします。</p>
+          </div>
+          <div class="migaki-block">
+            <div class="migaki-block-head"><span class="migaki-kana">き</span><h3>4. 判断するために必要な基準</h3></div>
+            <textarea id="standard" placeholder="例：表面利回り5%以上を維持する、空室率は10%以内に抑える、所得900万円を超えたら法人化を検討する"></textarea>
+            <a class="related-mini" href="houjinka.html">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              法人化診断を見る
+            </a>
+          </div>
+        </div>
+
+        <div class="panel" id="a">
+          <div class="panel-head">
+            <span class="panel-eyebrow">STEP あ — あるべき未来を描く</span>
+            <h2 class="panel-title">あるべき未来を描く</h2>
+            <p class="panel-desc">この物件・経営を、将来どのような状態にしたいかを描きます。</p>
+          </div>
+          <div class="migaki-block">
+            <div class="migaki-block-head"><span class="migaki-kana">あ</span><h3>5. 将来どうなっていたいか</h3></div>
+            <textarea id="future" placeholder="例：次世代に安心して引き継げる状態にしたい、地域に必要とされる物件として残したい"></textarea>
+            <a class="related-mini" href="exit.html">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              出口戦略診断を見る
+            </a>
+          </div>
+        </div>
+
+        <div class="panel" id="ge">
+          <div class="panel-head">
+            <span class="panel-eyebrow">STEP げ — 現実に行動する</span>
+            <h2 class="panel-title">今日から取り組む行動を決める</h2>
+            <p class="panel-desc">あるべき未来に向けて、今日から取り組める具体的な行動を書き出します。</p>
+          </div>
+          <div class="migaki-block">
+            <div class="migaki-block-head"><span class="migaki-kana">げ</span><h3>6. 今日から取り組む行動</h3></div>
+            <textarea id="action" placeholder="例：来月までに保険会社に保険金額の見直しを相談する、3ヶ月以内に物件別のキャッシュフローを確認する"></textarea>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn-primary" id="makeSheetBtn" type="button">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              診断シートを更新する
+            </button>
+            <button class="btn btn-secondary" id="printBtn" type="button">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6v-8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              印刷する
+            </button>
+            <button class="btn btn-ghost" id="resetBtn" type="button">リセット</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===== 右カラム：プレビュー ===== -->
+      <div class="preview-panel">
+        <div class="sheet" id="previewSheet">
+          <h2 class="sheet-title">不動産経営の磨き上げ診断シート</h2>
+
+          <div class="sheet-meta">
+            <div><span class="k">オーナー名：</span><span class="v" id="outOwner">未入力</span></div>
+            <div><span class="k">物件名：</span><span class="v" id="outProperty">未入力</span></div>
+            <div><span class="k">所在地：</span><span class="v" id="outAddress">未入力</span></div>
+            <div><span class="k">種類：</span><span class="v" id="outType">未入力</span></div>
+          </div>
+
+          <div class="sheet-item"><h4><span class="kana-mini">み</span>現在困っていること</h4><p id="outProblem" class="empty">未入力</p></div>
+          <div class="sheet-item"><h4><span class="kana-mini">み</span>見える化すべき項目</h4><p id="outVisible" class="empty">未入力</p></div>
+          <div class="sheet-item gold"><h4><span class="kana-mini">が</span>課題の原因</h4><p id="outCause" class="empty">未入力</p></div>
+          <div class="sheet-item gold"><h4><span class="kana-mini">き</span>判断基準</h4><p id="outStandard" class="empty">未入力</p></div>
+          <div class="sheet-item"><h4><span class="kana-mini">あ</span>あるべき未来</h4><p id="outFuture" class="empty">未入力</p></div>
+          <div class="sheet-item"><h4><span class="kana-mini">げ</span>行動計画</h4><p id="outAction" class="empty">未入力</p></div>
+
+          <div class="sheet-footer">み：見える化　が：原因を見つける　き：基準を決める　あ：あるべき未来を描く　げ：現実に行動する</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="f-brand">不動産経営の磨き上げツール</div>
+  <p>本シートの内容は保存されません。印刷または画面の控えで保管してください。個別の税務・法務上の判断には専門家への相談をおすすめします。</p>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  var FIELD_IDS = ["owner","property","address","type","problem","visible","cause","standard","future","action"];
+
+  function getValue(id){
+    var el = document.getElementById(id);
+    var v = el.value.trim();
+    return v === "" ? null : v;
+  }
+
+  function setOutput(outId, value){
+    var el = document.getElementById(outId);
+    if (value === null){
+      el.textContent = "未入力";
+      el.classList.add("empty");
+    } else {
+      el.textContent = value;
+      el.classList.remove("empty");
+    }
+  }
+
+  function makeSheet(){
+    setOutput("outOwner", getValue("owner"));
+    setOutput("outProperty", getValue("property"));
+    setOutput("outAddress", getValue("address"));
+    var typeVal = document.getElementById("type").value;
+    setOutput("outType", typeVal === "" ? null : typeVal);
+    setOutput("outProblem", getValue("problem"));
+    setOutput("outVisible", getValue("visible"));
+    setOutput("outCause", getValue("cause"));
+    setOutput("outStandard", getValue("standard"));
+    setOutput("outFuture", getValue("future"));
+    setOutput("outAction", getValue("action"));
+  }
+
+  document.getElementById("makeSheetBtn").addEventListener("click", makeSheet);
+  document.getElementById("printBtn").addEventListener("click", function(){
+    makeSheet();
+    window.print();
+  });
+  document.getElementById("resetBtn").addEventListener("click", function(){
+    if (!confirm("入力内容をすべてリセットします。よろしいですか？")) return;
+    FIELD_IDS.forEach(function(id){
+      var el = document.getElementById(id);
+      el.value = "";
+    });
+    makeSheet();
+  });
+
+  FIELD_IDS.forEach(function(id){
+    var el = document.getElementById(id);
+    el.addEventListener("input", makeSheet);
+    el.addEventListener("change", makeSheet);
+  });
+
+  makeSheet();
+})();
+</script>
+</body>
+</html>

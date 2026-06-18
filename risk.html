@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>賃貸経営継続診断（火災・地震リスク版）｜不動産経営の磨き上げツール</title>
+<meta name="description" content="火災・地震リスクに対する賃貸経営の継続力を診断。再構築価額と想定補償金額の比較、保険料増加の戸当たり月額換算、簡易チェック診断を1つのツールで。">
+<style>
+  :root{
+    --navy-950:#0b1e33;
+    --navy-900:#102943;
+    --navy-800:#15324f;
+    --navy-700:#1d4266;
+    --blue-600:#2e6fa6;
+    --blue-500:#3f8fd1;
+    --blue-100:#eaf2fa;
+    --gold-500:#c7a356;
+    --gold-300:#e3c98a;
+    --paper:#f5f7fa;
+    --paper-warm:#eef2f6;
+    --ink-900:#142535;
+    --ink-600:#4d5d6e;
+    --ink-400:#7c8a98;
+    --line:#dde4eb;
+    --white:#ffffff;
+    --good:#2c7a4b;
+    --good-bg:#eaf4ec;
+    --warn:#a06a0e;
+    --warn-bg:#fbf1de;
+    --bad:#b03a2e;
+    --bad-bg:#fbeae8;
+    --radius-lg:18px;
+    --radius-md:12px;
+    --shadow-card:0 1px 2px rgba(11,30,51,0.04), 0 8px 24px -10px rgba(11,30,51,0.12);
+    --serif: "Shippori Mincho", "Noto Serif JP", "Hiragino Mincho ProN", serif;
+    --sans: "Zen Kaku Gothic New", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+  }
+  @import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; font-family:var(--sans); color:var(--ink-900); background:var(--paper);
+    -webkit-font-smoothing:antialiased; line-height:1.7;
+  }
+  a{color:inherit;}
+  .skip-link{ position:absolute; left:-999px; top:0; background:var(--navy-900); color:#fff; padding:8px 14px; border-radius:8px; z-index:999; }
+  .skip-link:focus{ left:8px; top:8px; }
+
+  /* ===== Header ===== */
+  header.site{
+    position:relative;
+    background:
+      radial-gradient(1200px 480px at 12% -10%, rgba(63,143,209,0.22), transparent 60%),
+      radial-gradient(900px 420px at 95% 0%, rgba(199,163,86,0.16), transparent 55%),
+      linear-gradient(165deg, var(--navy-950) 0%, var(--navy-900) 48%, var(--navy-800) 100%);
+    color:#fff; overflow:hidden;
+  }
+  .header-inner{ max-width:920px; margin:0 auto; padding:24px 24px 56px; position:relative; z-index:1; }
+  .brand-row{ display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:34px; flex-wrap:wrap; }
+  .brand{ display:flex; align-items:center; gap:10px; font-family:var(--serif); font-weight:600; font-size:14.5px; letter-spacing:.04em; color:rgba(255,255,255,0.86); text-decoration:none; }
+  .brand .mark{ width:28px; height:28px; border-radius:50%; background:linear-gradient(140deg, var(--gold-300), var(--gold-500) 60%, #9a7a37); display:flex; align-items:center; justify-content:center; font-family:var(--serif); font-weight:800; font-size:12px; color:var(--navy-950); flex-shrink:0; }
+  .back-link{ display:inline-flex; align-items:center; gap:6px; font-size:13px; color:rgba(255,255,255,0.7); text-decoration:none; }
+  .back-link svg{ width:14px; height:14px; }
+  .back-link:hover{ color:#fff; }
+
+  .hero-kicker{ display:inline-flex; align-items:center; gap:8px; font-size:12.5px; letter-spacing:.12em; color:var(--gold-300); margin-bottom:16px; font-weight:500; }
+  .hero-kicker .rule{ width:24px; height:1px; background:var(--gold-300); display:inline-block; }
+  h1.hero-title{ font-family:var(--serif); font-weight:800; font-size:clamp(24px, 4.4vw, 36px); line-height:1.5; margin:0 0 16px; }
+  p.hero-lead{ font-size:clamp(14px, 1.9vw, 16.5px); color:rgba(255,255,255,0.82); max-width:600px; margin:0; }
+
+  .wave-divider{ display:block; width:100%; height:40px; margin-top:-2px; }
+
+  /* ===== Layout ===== */
+  main{ background:var(--paper); }
+  .section{ max-width:920px; margin:0 auto; padding:48px 24px; }
+  .section.tight-top{ padding-top:0; margin-top:-28px; }
+
+  .toc{
+    display:flex; flex-wrap:wrap; gap:10px; background:var(--white); border:1px solid var(--line);
+    border-radius:var(--radius-md); padding:16px 18px; box-shadow:var(--shadow-card); position:relative; z-index:2;
+  }
+  .toc a{
+    font-size:12.5px; font-weight:700; color:var(--blue-600); text-decoration:none;
+    padding:7px 13px; border-radius:999px; background:var(--blue-100);
+  }
+  .toc a:hover{ background:var(--blue-500); color:#fff; }
+
+  .panel{
+    background:var(--white); border:1px solid var(--line); border-radius:var(--radius-lg);
+    box-shadow:var(--shadow-card); padding:28px clamp(18px,4vw,36px); margin-bottom:28px;
+    scroll-margin-top:20px;
+  }
+  .panel-head{ margin-bottom:24px; }
+  .panel-eyebrow{ font-size:11.5px; letter-spacing:.12em; color:var(--blue-600); font-weight:700; margin-bottom:8px; display:block; }
+  .panel-title{ font-family:var(--serif); font-weight:700; font-size:clamp(19px,2.8vw,23px); color:var(--navy-900); margin:0 0 10px; }
+  .panel-desc{ color:var(--ink-600); font-size:14px; margin:0; }
+
+  .field-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:16px; margin-bottom:8px; }
+  .field{ display:flex; flex-direction:column; gap:6px; }
+  .field.full{ grid-column:1 / -1; }
+  .field label{ font-size:13px; font-weight:700; color:var(--navy-800); }
+  .field .hint{ font-size:11.5px; color:var(--ink-400); font-weight:400; }
+  .input-wrap{ position:relative; display:flex; align-items:center; }
+  .input-wrap input[type="number"], .input-wrap input[type="text"], .input-wrap select{
+    width:100%; padding:11px 44px 11px 13px; border:1.5px solid var(--line); border-radius:10px;
+    font-size:15px; font-family:var(--sans); color:var(--ink-900); background:var(--white);
+    transition:border-color .15s, box-shadow .15s;
+  }
+  .input-wrap select{ padding-right:13px; }
+  .input-wrap input:focus, .input-wrap select:focus{
+    outline:none; border-color:var(--blue-500); box-shadow:0 0 0 3px rgba(63,143,209,0.18);
+  }
+  .input-wrap .unit{ position:absolute; right:13px; font-size:13px; color:var(--ink-400); font-weight:700; pointer-events:none; }
+
+  .subgrid-title{
+    font-size:13px; font-weight:700; color:var(--navy-900); margin:22px 0 12px;
+    padding-top:18px; border-top:1px dashed var(--line);
+    display:flex; align-items:center; gap:8px;
+  }
+  .subgrid-title:first-of-type{ border-top:none; padding-top:0; margin-top:0; }
+  .subgrid-title .dot{ width:7px; height:7px; border-radius:50%; background:var(--gold-500); display:inline-block; }
+
+  /* result blocks */
+  .result-box{
+    margin-top:24px; border-radius:14px; padding:22px clamp(16px,3vw,26px);
+    background:var(--paper-warm); border:1px solid var(--line);
+  }
+  .result-row{
+    display:flex; justify-content:space-between; align-items:baseline; gap:12px;
+    padding:10px 0; border-bottom:1px solid var(--line); font-size:14px;
+  }
+  .result-row:last-child{ border-bottom:none; }
+  .result-row .r-label{ color:var(--ink-600); }
+  .result-row .r-value{ font-weight:700; color:var(--navy-900); font-size:15.5px; white-space:nowrap; }
+  .result-row.total{ font-size:15.5px; }
+  .result-row.total .r-label{ color:var(--navy-900); font-weight:700; }
+  .result-row.total .r-value{ font-size:19px; color:var(--blue-600); }
+
+  .verdict{
+    margin-top:18px; border-radius:12px; padding:18px 20px; display:flex; gap:14px; align-items:flex-start;
+  }
+  .verdict.v-good{ background:var(--good-bg); }
+  .verdict.v-warn{ background:var(--warn-bg); }
+  .verdict.v-bad{ background:var(--bad-bg); }
+  .verdict .v-icon{ flex-shrink:0; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+  .v-good .v-icon{ background:var(--good); }
+  .v-warn .v-icon{ background:var(--warn); }
+  .v-bad .v-icon{ background:var(--bad); }
+  .v-icon svg{ width:16px; height:16px; }
+  .verdict .v-title{ font-weight:700; font-size:14.5px; margin:0 0 4px; }
+  .v-good .v-title{ color:var(--good); }
+  .v-warn .v-title{ color:var(--warn); }
+  .v-bad .v-title{ color:var(--bad); }
+  .verdict p{ margin:0; font-size:13.5px; color:var(--ink-600); }
+
+  .highlight-num{
+    display:inline-block; font-family:var(--serif); font-weight:800; font-size:clamp(26px,5vw,34px);
+    color:var(--navy-900);
+  }
+  .month-result{
+    margin-top:22px; text-align:center; padding:26px 18px; border-radius:14px;
+    background:linear-gradient(150deg, var(--navy-900), var(--navy-800));
+    color:#fff;
+  }
+  .month-result .m-label{ font-size:12.5px; letter-spacing:.06em; color:var(--gold-300); font-weight:700; margin-bottom:10px; display:block; }
+  .month-result .m-value{ font-family:var(--serif); font-weight:800; font-size:clamp(30px,6vw,42px); }
+  .month-result .m-sub{ font-size:12.5px; color:rgba(255,255,255,0.65); margin-top:8px; }
+
+  /* checklist diagnosis */
+  .quiz-list{ display:flex; flex-direction:column; gap:16px; }
+  .quiz-item{ border:1px solid var(--line); border-radius:12px; padding:16px 18px; }
+  .quiz-q{ font-size:14px; font-weight:700; color:var(--navy-900); margin:0 0 12px; display:flex; gap:10px; }
+  .quiz-q .q-num{ font-family:var(--serif); color:var(--blue-600); flex-shrink:0; }
+  .quiz-options{ display:flex; flex-direction:column; gap:8px; padding-left:24px; }
+  .quiz-options label{
+    display:flex; align-items:center; gap:9px; font-size:13.5px; color:var(--ink-600);
+    padding:8px 10px; border-radius:8px; cursor:pointer; transition:background .15s;
+  }
+  .quiz-options label:hover{ background:var(--paper-warm); }
+  .quiz-options input[type="radio"]{ accent-color:var(--blue-500); width:16px; height:16px; flex-shrink:0; }
+
+  .score-summary{
+    display:flex; align-items:center; gap:22px; flex-wrap:wrap;
+    background:var(--paper-warm); border-radius:14px; padding:22px clamp(16px,3vw,26px); margin-top:22px;
+  }
+  .score-circle{
+    width:96px; height:96px; border-radius:50%; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; flex-direction:column;
+    background:var(--white); border:6px solid var(--blue-500); position:relative;
+  }
+  .score-circle .sc-num{ font-family:var(--serif); font-weight:800; font-size:26px; color:var(--navy-900); line-height:1; }
+  .score-circle .sc-max{ font-size:10px; color:var(--ink-400); }
+  .score-text{ flex:1; min-width:200px; }
+  .score-text .s-rank{ font-family:var(--serif); font-weight:800; font-size:18px; margin:0 0 6px; }
+  .score-text p{ margin:0; font-size:13.5px; color:var(--ink-600); }
+
+  /* buttons */
+  .btn-row{ display:flex; gap:12px; flex-wrap:wrap; margin-top:22px; }
+  .btn{
+    appearance:none; border:none; cursor:pointer; font-family:var(--sans);
+    font-weight:700; font-size:14px; padding:13px 24px; border-radius:10px;
+    display:inline-flex; align-items:center; gap:8px; transition:transform .15s, box-shadow .15s, background .15s;
+  }
+  .btn:active{ transform:translateY(1px); }
+  .btn-primary{ background:linear-gradient(135deg, var(--blue-600), var(--navy-800)); color:#fff; box-shadow:0 8px 20px -8px rgba(46,111,166,0.5); }
+  .btn-primary:hover{ box-shadow:0 12px 26px -8px rgba(46,111,166,0.6); }
+  .btn-secondary{ background:var(--white); color:var(--navy-800); border:1.5px solid var(--line); }
+  .btn-secondary:hover{ border-color:var(--blue-500); color:var(--blue-600); }
+  .btn-gold{ background:linear-gradient(135deg, var(--gold-300), var(--gold-500)); color:var(--navy-950); box-shadow:0 8px 20px -8px rgba(199,163,86,0.5); }
+  .btn-gold:hover{ box-shadow:0 12px 26px -8px rgba(199,163,86,0.6); }
+  .btn svg{ width:16px; height:16px; }
+  .btn[disabled]{ opacity:.55; cursor:not-allowed; }
+
+  .note-box{
+    margin-top:18px; font-size:12.5px; color:var(--ink-400); background:var(--paper-warm);
+    border-radius:10px; padding:12px 16px; line-height:1.7;
+  }
+  .note-box strong{ color:var(--ink-600); }
+
+  .doc-fields{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:14px; margin-top:18px;
+  }
+
+  /* about source */
+  .source-tag{
+    display:inline-flex; align-items:center; gap:6px; font-size:11.5px; color:var(--ink-400);
+    background:var(--paper-warm); padding:5px 11px; border-radius:999px; margin-top:6px;
+  }
+
+  footer.site{ background:var(--navy-950); color:rgba(255,255,255,0.6); padding:30px 24px; text-align:center; font-size:12.5px; }
+  footer.site .f-brand{ color:rgba(255,255,255,0.85); font-weight:700; margin-bottom:6px; }
+
+  .related-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:14px; margin-top:8px; }
+  .related-card{ background:var(--white); border:1px solid var(--line); border-radius:12px; padding:16px 18px; text-decoration:none; display:flex; flex-direction:column; gap:6px; transition:transform .18s, box-shadow .18s, border-color .18s; }
+  .related-card:hover{ transform:translateY(-3px); box-shadow:0 14px 28px -14px rgba(16,41,67,0.25); border-color:rgba(63,143,209,0.35); }
+  .related-card .rc-title{ font-weight:700; font-size:13.5px; color:var(--navy-900); }
+  .related-card .rc-desc{ font-size:12px; color:var(--ink-600); }
+  .related-card .rc-cta{ font-size:12px; font-weight:700; color:var(--blue-600); margin-top:4px; }
+
+  @media (max-width:560px){
+    .header-inner{ padding:20px 18px 48px; }
+    .section{ padding:32px 18px; }
+    .panel{ padding:22px 16px; }
+    .score-circle{ width:84px; height:84px; }
+  }
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; scroll-behavior:auto !important; } }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">本文へスキップ</a>
+
+<header class="site">
+  <div class="header-inner">
+    <div class="brand-row">
+      <a class="brand" href="index.html"><span class="mark">磨</span>不動産経営の磨き上げ</a>
+      <a class="back-link" href="index.html">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        ツール一覧へ戻る
+      </a>
+    </div>
+    <span class="hero-kicker"><span class="rule"></span>02 / RISK DIAGNOSIS</span>
+    <h1 class="hero-title">賃貸経営継続診断<br>（火災・地震リスク版）</h1>
+    <p class="hero-lead">火災保険は「入っているか」ではなく、「万一の際に賃貸経営を継続できる水準か」が重要です。再構築価額と想定補償金額を比較し、保険料増加の影響も合わせて確認します。</p>
+  </div>
+  <svg class="wave-divider" viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M0,32 C240,68 480,0 720,24 C960,48 1200,8 1440,32 L1440,60 L0,60 Z" fill="#f5f7fa"></path>
+  </svg>
+</header>
+
+<main id="main">
+  <div class="section tight-top">
+    <nav class="toc" aria-label="ツール内ナビゲーション">
+      <a href="#coverage">① 補償額チェック</a>
+      <a href="#premium">② 保険料増加の月額換算</a>
+      <a href="#quiz">③ 簡易リスクチェック</a>
+      <a href="#consent">④ 同意書の作成</a>
+      <a href="#related">⑤ 関連ツール</a>
+    </nav>
+  </div>
+
+  <!-- ① 補償額チェック -->
+  <section class="section" style="padding-top:0;">
+    <div class="panel" id="coverage">
+      <div class="panel-head">
+        <span class="panel-eyebrow">STEP 1 — 見える化</span>
+        <h2 class="panel-title">再構築価額 vs 想定補償金額</h2>
+        <p class="panel-desc">「今、同じ建物を建て直すとしたらいくらか（再構築価額）」と、「火災で全部損壊した場合に賃貸経営を続けるために必要な金額（想定補償金額）」を比較します。想定補償金額が再構築価額を下回る場合、自己資金の追加負担が生じる可能性があります。</p>
+      </div>
+
+      <div class="subgrid-title"><span class="dot"></span>再構築価額</div>
+      <div class="field-grid">
+        <div class="field full">
+          <label for="rebuildCost">本物件の再構築価額<span class="hint">（見積書等に記載の金額）</span></label>
+          <div class="input-wrap">
+            <input type="number" id="rebuildCost" inputmode="numeric" min="0" step="100000" placeholder="例：80000000">
+            <span class="unit">円</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="subgrid-title"><span class="dot"></span>想定補償金額の内訳</div>
+      <div class="field-grid">
+        <div class="field">
+          <label for="loanBalance">① 借入金残高<span class="hint">（現時点）</span></label>
+          <div class="input-wrap">
+            <input type="number" id="loanBalance" inputmode="numeric" min="0" step="100000" placeholder="例：40000000">
+            <span class="unit">円</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="demolitionCost">② 解体・撤去費用</label>
+          <div class="input-wrap">
+            <input type="number" id="demolitionCost" inputmode="numeric" min="0" step="100000" placeholder="例：5000000">
+            <span class="unit">円</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="equityRatio">③ 再建築時の自己資本目安<span class="hint">（融資姿勢等により変動／目安30〜50%）</span></label>
+          <div class="input-wrap">
+            <input type="number" id="equityRatio" inputmode="numeric" min="0" max="100" step="1" value="30">
+            <span class="unit">%</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="currentCoverage">現在加入中の建物保険金額<span class="hint">（任意・比較用）</span></label>
+          <div class="input-wrap">
+            <input type="number" id="currentCoverage" inputmode="numeric" min="0" step="100000" placeholder="例：50000000">
+            <span class="unit">円</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-box" id="coverageResultBox" style="display:none;">
+        <div class="result-row"><span class="r-label">① 借入金残高</span><span class="r-value" id="rLoan">—</span></div>
+        <div class="result-row"><span class="r-label">② 解体・撤去費用</span><span class="r-value" id="rDemo">—</span></div>
+        <div class="result-row"><span class="r-label">③ 自己資本額（再構築価額 × 自己資本目安）</span><span class="r-value" id="rEquity">—</span></div>
+        <div class="result-row total"><span class="r-label">想定補償金額 合計（①＋②＋③）</span><span class="r-value" id="rTotal">—</span></div>
+        <div class="result-row"><span class="r-label">再構築価額</span><span class="r-value" id="rRebuild">—</span></div>
+        <div class="result-row" id="rCoverageRow" style="display:none;"><span class="r-label">現在加入中の建物保険金額</span><span class="r-value" id="rCurrentCoverage">—</span></div>
+      </div>
+
+      <div class="verdict" id="coverageVerdict" style="display:none;"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" id="calcCoverageBtn" type="button">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          補償額を比較する
+        </button>
+      </div>
+      <div class="note-box"><strong>ご注意：</strong>本ツールの計算結果は一般的な目安です。実際の保険金額・補償内容の検討にあたっては、見積書・借入残高資料等をもとに専門家にご確認ください。</div>
+    </div>
+  </section>
+
+  <!-- ② 保険料増加の月額換算 -->
+  <section class="section" style="padding-top:0;">
+    <div class="panel" id="premium">
+      <div class="panel-head">
+        <span class="panel-eyebrow">STEP 2 — 見える化</span>
+        <h2 class="panel-title">保険料増加の「1戸あたり月額」換算</h2>
+        <p class="panel-desc">火災保険・地震保険は更新のたびに保険料が上がることがあります。旧契約と新契約の期間・総額を入力すると、年間増加額と「1戸あたり月額でいくら増えるか」が分かります。期間が異なる契約（例：火災10年・地震5年）も別々に入力できます。</p>
+      </div>
+
+      <div class="subgrid-title"><span class="dot"></span>火災保険</div>
+      <div class="field-grid">
+        <div class="field">
+          <label for="fireOldYears">旧 期間</label>
+          <div class="input-wrap"><input type="number" id="fireOldYears" min="1" step="1" value="10"><span class="unit">年</span></div>
+        </div>
+        <div class="field">
+          <label for="fireOldTotal">旧 保険料総額</label>
+          <div class="input-wrap"><input type="number" id="fireOldTotal" min="0" step="10000" value="1200000"><span class="unit">円</span></div>
+        </div>
+        <div class="field">
+          <label for="fireNewYears">新 期間</label>
+          <div class="input-wrap"><input type="number" id="fireNewYears" min="1" step="1" value="5"><span class="unit">年</span></div>
+        </div>
+        <div class="field">
+          <label for="fireNewTotal">新 保険料総額</label>
+          <div class="input-wrap"><input type="number" id="fireNewTotal" min="0" step="10000" value="1000000"><span class="unit">円</span></div>
+        </div>
+      </div>
+
+      <div class="subgrid-title"><span class="dot"></span>地震保険</div>
+      <div class="field-grid">
+        <div class="field">
+          <label for="quakeOldYears">旧 期間</label>
+          <div class="input-wrap"><input type="number" id="quakeOldYears" min="1" step="1" value="5"><span class="unit">年</span></div>
+        </div>
+        <div class="field">
+          <label for="quakeOldTotal">旧 保険料総額</label>
+          <div class="input-wrap"><input type="number" id="quakeOldTotal" min="0" step="10000" value="200000"><span class="unit">円</span></div>
+        </div>
+        <div class="field">
+          <label for="quakeNewYears">新 期間</label>
+          <div class="input-wrap"><input type="number" id="quakeNewYears" min="1" step="1" value="5"><span class="unit">年</span></div>
+        </div>
+        <div class="field">
+          <label for="quakeNewTotal">新 保険料総額</label>
+          <div class="input-wrap"><input type="number" id="quakeNewTotal" min="0" step="10000" value="400000"><span class="unit">円</span></div>
+        </div>
+      </div>
+
+      <div class="subgrid-title"><span class="dot"></span>戸数</div>
+      <div class="field-grid">
+        <div class="field">
+          <label for="unitCount">戸数<span class="hint">（家賃で回収する総戸数）</span></label>
+          <div class="input-wrap"><input type="number" id="unitCount" min="1" step="1" value="10"><span class="unit">戸</span></div>
+        </div>
+      </div>
+
+      <div class="result-box" id="premiumResultBox" style="display:none;">
+        <div class="result-row"><span class="r-label">火災保険：旧 年間 / 新 年間</span><span class="r-value" id="pFireYear">—</span></div>
+        <div class="result-row"><span class="r-label">地震保険：旧 年間 / 新 年間</span><span class="r-value" id="pQuakeYear">—</span></div>
+        <div class="result-row total"><span class="r-label">年間増加額（合計）</span><span class="r-value" id="pYearTotal">—</span></div>
+      </div>
+
+      <div class="month-result" id="monthResultBox" style="display:none;">
+        <span class="m-label">1戸あたり月額増加（目安）</span>
+        <span class="m-value" id="pMonthPerUnit">—</span>
+        <div class="m-sub">家賃・共益費の調整目安としてご活用ください（100円単位で四捨五入）</div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" id="calcPremiumBtn" type="button">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          月額増加を計算する
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ③ 簡易リスクチェック -->
+  <section class="section" style="padding-top:0;">
+    <div class="panel" id="quiz">
+      <div class="panel-head">
+        <span class="panel-eyebrow">STEP 3 — 原因を見つける／基準を決める</span>
+        <h2 class="panel-title">簡易リスクチェック診断</h2>
+        <p class="panel-desc">6つの質問に答えると、災害リスクへの備えを簡易的に点数化します。すべて選択すると自動で結果が表示されます。</p>
+      </div>
+
+      <div class="quiz-list" id="quizList">
+        <!-- JS will populate, but provide static fallback structure -->
+      </div>
+
+      <div class="score-summary" id="scoreSummary" style="display:none;">
+        <div class="score-circle">
+          <span class="sc-num" id="scoreNum">0</span>
+          <span class="sc-max">/ 100点</span>
+        </div>
+        <div class="score-text">
+          <p class="s-rank" id="scoreRank">—</p>
+          <p id="scoreComment">すべての質問に回答すると結果が表示されます。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ④ 同意書 -->
+  <section class="section" style="padding-top:0;">
+    <div class="panel" id="consent">
+      <div class="panel-head">
+        <span class="panel-eyebrow">STEP 4 — 行動する</span>
+        <h2 class="panel-title">火災保険 補償内容・保険金額に関する同意書を作成</h2>
+        <p class="panel-desc">上記①の計算結果をもとに、再構築価額・想定補償金額・建物保険金額を記載した同意書ファイル（Word形式）を作成します。物件名・所在地・建築年月日・ご署名・日付は空欄になりますので、印刷後にご記入ください。</p>
+      </div>
+
+      <div class="doc-fields">
+        <div class="field">
+          <label for="docCoverageAmount">同意書に記載する建物の保険金額</label>
+          <div class="input-wrap">
+            <input type="number" id="docCoverageAmount" inputmode="numeric" min="0" step="100000" placeholder="①の計算後に自動入力されます">
+            <span class="unit">円</span>
+          </div>
+        </div>
+      </div>
+      <div class="note-box">同意書には、上記「① 補償額チェック」で入力・計算した「再構築価額」「借入金残高」「解体・撤去費用」「自己資本額」「想定補償金額合計」が自動で転記されます。先に①の計算を行ってください。</div>
+
+      <div class="btn-row">
+        <button class="btn btn-gold" id="makeDocxBtn" type="button" disabled>
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 2v6h6M9 13h6M9 17h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          同意書（Word）を作成
+        </button>
+      </div>
+      <div class="note-box" id="docxHint"><strong>ヒント：</strong>「① 補償額チェック」で「補償額を比較する」を押すと、このボタンが使えるようになります。</div>
+      <div class="source-tag">本同意書は税理士監修フォーマットに基づくテンプレートです（記入例：物件情報・氏名・日付は別途ご記入ください）</div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0;" id="related">
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-eyebrow">NEXT STEP</span>
+        <h2 class="panel-title">関連する診断ツール</h2>
+        <p class="panel-desc">リスクへの備えが分かったら、他の視点からも経営状況を確認してみましょう。</p>
+      </div>
+      <div class="related-grid">
+        <a class="related-card" href="kinri.html">
+          <span class="rc-title">大規模修繕・借入金利シミュレーション</span>
+          <span class="rc-desc">金利上昇や修繕費の影響を確認します。</span>
+          <span class="rc-cta">診断する →</span>
+        </a>
+        <a class="related-card" href="cf.html">
+          <span class="rc-title">物件別キャッシュフロー診断</span>
+          <span class="rc-desc">所有物件ごとの収益性を比較します。</span>
+          <span class="rc-cta">診断する →</span>
+        </a>
+        <a class="related-card" href="migakiage.html">
+          <span class="rc-title">不動産経営の磨き上げ診断</span>
+          <span class="rc-desc">経営全体を5つの視点で整理します。</span>
+          <span class="rc-cta">診断する →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="f-brand">不動産経営の磨き上げツール</div>
+  <p>本ツールの診断結果は一般的な目安であり、個別の税務・保険・法務上の判断には専門家への相談をおすすめします。</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/index.umd.min.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  function yen(n){
+    if (!isFinite(n)) return "—";
+    return Math.round(n).toLocaleString("ja-JP") + " 円";
+  }
+  function num(id){
+    var el = document.getElementById(id);
+    var v = parseFloat(el.value);
+    return isFinite(v) ? v : 0;
+  }
+
+  /* ===== ① 補償額チェック ===== */
+  var lastCoverage = null;
+
+  document.getElementById("calcCoverageBtn").addEventListener("click", function(){
+    var rebuild = num("rebuildCost");
+    var loan = num("loanBalance");
+    var demo = num("demolitionCost");
+    var ratio = num("equityRatio") / 100;
+    var current = num("currentCoverage");
+
+    var equity = rebuild * ratio;
+    var total = loan + demo + equity;
+
+    document.getElementById("rLoan").textContent = yen(loan);
+    document.getElementById("rDemo").textContent = yen(demo);
+    document.getElementById("rEquity").textContent = yen(equity);
+    document.getElementById("rTotal").textContent = yen(total);
+    document.getElementById("rRebuild").textContent = yen(rebuild);
+
+    var coverageRow = document.getElementById("rCoverageRow");
+    if (current > 0){
+      coverageRow.style.display = "flex";
+      document.getElementById("rCurrentCoverage").textContent = yen(current);
+    } else {
+      coverageRow.style.display = "none";
+    }
+
+    document.getElementById("coverageResultBox").style.display = "block";
+
+    var verdict = document.getElementById("coverageVerdict");
+    var diff = rebuild - total;
+    var html = "";
+    var cls = "v-good";
+    if (rebuild <= 0){
+      cls = "v-warn";
+      html = "<div class='v-icon'><svg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M12 9v4M12 17h.01M10.29 3.86l-8.18 14.18A1 1 0 003 19.5h18a1 1 0 00.89-1.46L13.71 3.86a1 1 0 00-1.42 0z' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg></div>"
+        + "<div><p class='v-title'>再構築価額を入力してください</p><p>比較を行うには、まず本物件の再構築価額を入力してください。</p></div>";
+    } else if (diff > 0){
+      cls = "v-bad";
+      html = "<div class='v-icon'><svg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M12 9v4M12 17h.01M10.29 3.86l-8.18 14.18A1 1 0 003 19.5h18a1 1 0 00.89-1.46L13.71 3.86a1 1 0 00-1.42 0z' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg></div>"
+        + "<div><p class='v-title'>想定補償金額が再構築価額を下回っています（不足額 " + yen(diff) + "）</p><p>火災発生時に自己資金の追加負担が生じる可能性があります。保険金額の見直しをご検討ください。</p></div>";
+    } else {
+      cls = "v-good";
+      html = "<div class='v-icon'><svg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M20 6L9 17l-5-5' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/></svg></div>"
+        + "<div><p class='v-title'>想定補償金額は再構築価額をカバーしています</p><p>再構築価額を基準とした補償が確保されており、再建・売却・組替えなど将来の選択肢を保ちやすい状態です。</p></div>";
+    }
+    verdict.className = "verdict " + cls;
+    verdict.innerHTML = html;
+    verdict.style.display = "flex";
+
+    lastCoverage = { rebuild: rebuild, loan: loan, demo: demo, equity: equity, total: total, ratioPct: num("equityRatio") };
+
+    var docInput = document.getElementById("docCoverageAmount");
+    if (!docInput.value){ docInput.value = Math.round(total); }
+
+    document.getElementById("makeDocxBtn").disabled = false;
+    document.getElementById("docxHint").style.display = "none";
+  });
+
+  /* ===== ② 保険料増加 月額換算 ===== */
+  document.getElementById("calcPremiumBtn").addEventListener("click", function(){
+    var fireOldYears = num("fireOldYears") || 1;
+    var fireOldTotal = num("fireOldTotal");
+    var fireNewYears = num("fireNewYears") || 1;
+    var fireNewTotal = num("fireNewTotal");
+
+    var quakeOldYears = num("quakeOldYears") || 1;
+    var quakeOldTotal = num("quakeOldTotal");
+    var quakeNewYears = num("quakeNewYears") || 1;
+    var quakeNewTotal = num("quakeNewTotal");
+
+    var units = num("unitCount") || 1;
+
+    var fireOldYear = fireOldTotal / fireOldYears;
+    var fireNewYear = fireNewTotal / fireNewYears;
+    var quakeOldYear = quakeOldTotal / quakeOldYears;
+    var quakeNewYear = quakeNewTotal / quakeNewYears;
+
+    var fireIncrease = fireNewYear - fireOldYear;
+    var quakeIncrease = quakeNewYear - quakeOldYear;
+    var totalIncrease = fireIncrease + quakeIncrease;
+
+    document.getElementById("pFireYear").textContent = yen(fireOldYear) + " → " + yen(fireNewYear);
+    document.getElementById("pQuakeYear").textContent = yen(quakeOldYear) + " → " + yen(quakeNewYear);
+    document.getElementById("pYearTotal").textContent = yen(totalIncrease);
+    document.getElementById("premiumResultBox").style.display = "block";
+
+    var monthPerUnit = totalIncrease / 12 / units;
+    var rounded = Math.round(monthPerUnit / 100) * 100;
+
+    document.getElementById("pMonthPerUnit").textContent = (rounded >= 0 ? "+" : "") + rounded.toLocaleString("ja-JP") + " 円 / 戸 / 月";
+    document.getElementById("monthResultBox").style.display = "block";
+  });
+
+  /* ===== ③ 簡易リスクチェック診断 ===== */
+  var QUESTIONS = [
+    {
+      q: "建物の建築年は、新耐震基準（昭和56年6月以降）に基づいていますか？",
+      opts: [
+        { t: "新耐震基準後に建築、または建て替え・大規模耐震改修済み", v: 20 },
+        { t: "新耐震基準後だが耐震診断は未実施", v: 12 },
+        { t: "新耐震基準前（昭和56年5月以前）の建築で対応未定", v: 4 }
+      ]
+    },
+    {
+      q: "火災保険・地震保険の保険金額は、再構築価額を基準に設定されていますか？",
+      opts: [
+        { t: "再構築価額を基準に設定し、定期的に見直している", v: 20 },
+        { t: "加入はしているが、金額の根拠は確認していない", v: 10 },
+        { t: "保険金額や加入状況をほとんど把握していない", v: 2 }
+      ]
+    },
+    {
+      q: "消防設備（消火器・火災警報器・避難経路など）の点検状況は？",
+      opts: [
+        { t: "法定点検を定期的に実施し、記録も残している", v: 18 },
+        { t: "設置はしているが点検は不定期", v: 10 },
+        { t: "点検状況を把握していない", v: 3 }
+      ]
+    },
+    {
+      q: "所有物件のハザードマップ（水害・地震想定）は確認済みですか？",
+      opts: [
+        { t: "確認済みで、リスクに応じた対策を検討している", v: 16 },
+        { t: "確認したことはあるが対策は未検討", v: 9 },
+        { t: "確認していない", v: 2 }
+      ]
+    },
+    {
+      q: "災害発生時の空室・修繕費用に対する資金的な備えは？",
+      opts: [
+        { t: "予備資金や特約等で備えがある", v: 14 },
+        { t: "ある程度の備えはあるが十分か分からない", v: 7 },
+        { t: "特に備えていない", v: 1 }
+      ]
+    },
+    {
+      q: "保険の更新時に、保険料の増減や補償内容の見直しを行っていますか？",
+      opts: [
+        { t: "毎回見直し、必要に応じて補償内容を調整している", v: 12 },
+        { t: "更新はするが内容の見直しはあまりしていない", v: 6 },
+        { t: "更新時の案内をそのまま継続しているだけ", v: 1 }
+      ]
+    }
+  ];
+
+  var quizList = document.getElementById("quizList");
+  var answers = new Array(QUESTIONS.length).fill(null);
+
+  QUESTIONS.forEach(function(item, qi){
+    var wrap = document.createElement("div");
+    wrap.className = "quiz-item";
+
+    var qEl = document.createElement("p");
+    qEl.className = "quiz-q";
+    qEl.innerHTML = "<span class='q-num'>Q" + (qi+1) + "</span><span>" + item.q + "</span>";
+    wrap.appendChild(qEl);
+
+    var optsWrap = document.createElement("div");
+    optsWrap.className = "quiz-options";
+
+    item.opts.forEach(function(opt, oi){
+      var label = document.createElement("label");
+      var input = document.createElement("input");
+      input.type = "radio";
+      input.name = "q" + qi;
+      input.value = opt.v;
+      input.addEventListener("change", function(){
+        answers[qi] = opt.v;
+        updateScore();
+      });
+      label.appendChild(input);
+      var span = document.createElement("span");
+      span.textContent = opt.t;
+      label.appendChild(span);
+      optsWrap.appendChild(label);
+    });
+
+    wrap.appendChild(optsWrap);
+    quizList.appendChild(wrap);
+  });
+
+  function updateScore(){
+    var answeredCount = answers.filter(function(a){ return a !== null; }).length;
+    var summary = document.getElementById("scoreSummary");
+    if (answeredCount === 0){
+      summary.style.display = "none";
+      return;
+    }
+    summary.style.display = "flex";
+
+    var sum = answers.reduce(function(acc, a){ return acc + (a || 0); }, 0);
+
+    document.getElementById("scoreNum").textContent = sum;
+
+    var rankEl = document.getElementById("scoreRank");
+    var commentEl = document.getElementById("scoreComment");
+
+    if (answeredCount < QUESTIONS.length){
+      rankEl.textContent = "回答中（" + answeredCount + " / " + QUESTIONS.length + " 問）";
+      rankEl.style.color = "var(--ink-600)";
+      commentEl.textContent = "すべての質問に回答すると、最終的な評価コメントが表示されます。";
+      return;
+    }
+
+    var rank, comment, color;
+    if (sum >= 80){
+      rank = "ランク A — 備えは十分です";
+      color = "var(--good)";
+      comment = "建物の耐震性・保険・防災・資金面のいずれも一定の備えができています。今後は定期的な見直しを継続してください。";
+    } else if (sum >= 55){
+      rank = "ランク B — 一部に見直しの余地があります";
+      color = "var(--blue-600)";
+      comment = "全体的には備えがありますが、保険金額の根拠や災害時の資金準備など、いくつかの項目を見直すことでさらに経営継続力を高められます。";
+    } else if (sum >= 30){
+      rank = "ランク C — 見直しを検討すべき項目があります";
+      color = "var(--warn)";
+      comment = "耐震性・保険金額・防災対策のいずれかに不安が残ります。上記の「補償額チェック」と合わせて、優先順位をつけて対応をご検討ください。";
+    } else {
+      rank = "ランク D — 早めの対応をおすすめします";
+      color = "var(--bad)";
+      comment = "災害発生時に賃貸経営の継続が難しくなるリスクが高い状態です。保険金額の見直しや耐震性の確認など、優先的に対応することをおすすめします。";
+    }
+    rankEl.textContent = rank;
+    rankEl.style.color = color;
+    commentEl.textContent = comment;
+  }
+
+  /* ===== ④ 同意書（docx）作成 ===== */
+  document.getElementById("makeDocxBtn").addEventListener("click", function(){
+    if (!lastCoverage){ return; }
+    if (typeof docx === "undefined"){
+      alert("Word作成用ライブラリの読み込みに失敗しました。通信環境をご確認のうえ再読み込みしてください。");
+      return;
+    }
+
+    var coverageAmount = num("docCoverageAmount");
+
+    var { Document, Packer, Paragraph, TextRun, AlignmentType, HeadingLevel,
+          BorderStyle, Table, TableRow, TableCell, WidthType, ShadingType } = docx;
+
+    function p(text, opts){
+      opts = opts || {};
+      return new Paragraph(Object.assign({
+        children: [new TextRun({ text: text, font: "游明朝", size: 22, bold: !!opts.bold })],
+        spacing: { after: 160 }
+      }, opts.pOverrides || {}));
+    }
+
+    function blankLineRow(label, value){
+      return new TableRow({
+        children: [
+          new TableCell({
+            width: { size: 4500, type: WidthType.DXA },
+            margins: { top: 100, bottom: 100, left: 120, right: 120 },
+            shading: { fill: "EEF2F6", type: ShadingType.CLEAR },
+            children: [ new Paragraph({ children:[ new TextRun({ text: label, font:"游明朝", size: 21 }) ] }) ]
+          }),
+          new TableCell({
+            width: { size: 4860, type: WidthType.DXA },
+            margins: { top: 100, bottom: 100, left: 120, right: 120 },
+            children: [ new Paragraph({ children:[ new TextRun({ text: value, font:"游明朝", size: 21, bold:true }) ] }) ]
+          })
+        ]
+      });
+    }
+
+    var border = { style: BorderStyle.SINGLE, size: 2, color: "CCCCCC" };
+    var borders = { top: border, bottom: border, left: border, right: border };
+
+    function tableRow(label, value){
+      return new TableRow({
+        children: [
+          new TableCell({
+            borders: borders,
+            width: { size: 4500, type: WidthType.DXA },
+            margins: { top: 100, bottom: 100, left: 120, right: 120 },
+            shading: { fill: "EEF2F6", type: ShadingType.CLEAR },
+            children: [ new Paragraph({ children:[ new TextRun({ text: label, font:"游明朝", size: 21 }) ] }) ]
+          }),
+          new TableCell({
+            borders: borders,
+            width: { size: 4860, type: WidthType.DXA },
+            margins: { top: 100, bottom: 100, left: 120, right: 120 },
+            children: [ new Paragraph({ children:[ new TextRun({ text: value, font:"游明朝", size: 21, bold:true }) ] }) ]
+          })
+        ]
+      });
+    }
+
+    var yenStr = function(n){ return Math.round(n).toLocaleString("ja-JP") + " 円"; };
+
+    var children = [];
+
+    children.push(new Paragraph({
+      alignment: AlignmentType.CENTER,
+      children: [ new TextRun({ text: "賃貸アパート火災保険必要補償額と再構築価額に関するご説明", font:"游明朝", size: 30, bold: true }) ],
+      spacing: { after: 300 }
+    }));
+
+    children.push(new Paragraph({
+      alignment: AlignmentType.RIGHT,
+      children: [ new TextRun({ text: "プロテクトコンサルティング株式会社", font:"游明朝", size: 21 }) ],
+      spacing: { after: 60 }
+    }));
+    children.push(new Paragraph({
+      alignment: AlignmentType.RIGHT,
+      children: [ new TextRun({ text: "髙島聖也税理士事務所", font:"游明朝", size: 21 }) ],
+      spacing: { after: 260 }
+    }));
+
+    children.push(p("本資料は、別紙の見積書・借入残高資料等に記載された金額をもとに、必要な補償金額の考え方と「再構築価額」と「想定補償金額」の違いを簡単に補足説明するものです。金額の根拠・前提条件は別紙をご確認ください。"));
+    children.push(p("火災保険は「加入しているか」ではなく、「万一の際に賃貸経営を継続できる水準か」が重要になります。"));
+
+    children.push(new Paragraph({ heading: HeadingLevel.HEADING_2, children:[ new TextRun({ text:"（１）再構築価額について", font:"游明朝", size: 26, bold:true }) ], spacing:{ before: 200, after: 160 } }));
+    children.push(p("再構築価額とは、現在の建築費水準で、同等の建物を新たに建築するために必要な金額をいいます。建築当時の取得価額や固定資産税評価額ではなく、「今、同じ建物を建て直すとしたらいくらか」という視点で算定します。"));
+    children.push(p("一般に、築浅の物件ほど再建ニーズが高く、再構築価額ベースの補償が検討対象になります（物件方針・資金計画・保険料負担により個別判断）。"));
+
+    children.push(new Table({
+      width: { size: 9360, type: WidthType.DXA },
+      columnWidths: [4500, 4860],
+      rows: [ tableRow("本物件の再構築価額", yenStr(lastCoverage.rebuild)) ]
+    }));
+    children.push(p(""));
+
+    children.push(new Paragraph({ heading: HeadingLevel.HEADING_2, children:[ new TextRun({ text:"（２）想定補償金額の内訳", font:"游明朝", size: 26, bold:true }) ], spacing:{ before: 200, after: 160 } }));
+    children.push(p("火災で建物が全部損壊した場合に、賃貸経営を続けるために必要となる最低限の補償の考え方は次の通りです。"));
+
+    children.push(new Table({
+      width: { size: 9360, type: WidthType.DXA },
+      columnWidths: [4500, 4860],
+      rows: [
+        tableRow("① 借入金残高（現時点・別紙参照）", yenStr(lastCoverage.loan)),
+        tableRow("② 解体・撤去費用（別紙参照）", yenStr(lastCoverage.demo)),
+        tableRow("③ 再建築時に必要となる自己資本額（目安 " + lastCoverage.ratioPct + "%）", yenStr(lastCoverage.equity)),
+        tableRow("想定補償金額 合計（①＋②＋③）", yenStr(lastCoverage.total))
+      ]
+    }));
+    children.push(p(""));
+
+    children.push(new Paragraph({ heading: HeadingLevel.HEADING_2, children:[ new TextRun({ text:"（３）再構築価額と想定補償金額の比較", font:"游明朝", size: 26, bold:true }) ], spacing:{ before: 200, after: 160 } }));
+    children.push(p("再構築価額と想定補償金額を比較した結果、想定補償金額が再構築価額を下回る場合には、火災発生時に自己資金の追加負担が生じる可能性があります。"));
+    children.push(p("再構築価額を基準とした補償設定を行うことで、再建・売却・組替えといった将来の経営判断の選択肢を確保しやすくなります。"));
+
+    children.push(new Paragraph({
+      children:[ new TextRun({ text:"火災保険補償内容・保険金額に関する同意書", font:"游明朝", size: 26, bold:true }) ],
+      spacing:{ before: 320, after: 200 },
+      border: { bottom: { style: BorderStyle.SINGLE, size: 6, color: "2E75B6", space: 4 } }
+    }));
+
+    children.push(p("私は、本物件に関する火災保険について、別紙の見積書・借入残高資料等を確認したうえで、再構築価額および想定補償金額の考え方、並びにそれぞれの補償水準が賃貸経営に与える影響について説明を受け、理解しました。"));
+    children.push(p("加入する火災保険の内容", { bold: true }));
+
+    children.push(new Table({
+      width: { size: 9360, type: WidthType.DXA },
+      columnWidths: [4500, 4860],
+      rows: [ tableRow("① 建物に対する保険金額", coverageAmount > 0 ? yenStr(coverageAmount) : "（未入力）") ]
+    }));
+    children.push(p(""));
+
+    children.push(p("上記内容に基づき、記載された保険金額で火災保険に加入することに同意します。"));
+    children.push(p("別紙：再構築価額見積書／解体・撤去費用見積書／借入金残高資料（該当するもの）"));
+
+    children.push(new Table({
+      width: { size: 9360, type: WidthType.DXA },
+      columnWidths: [4500, 4860],
+      rows: [
+        blankLineRow("物件名", "　"),
+        blankLineRow("所在地", "　"),
+        blankLineRow("建築年月日", "　")
+      ]
+    }));
+
+    children.push(p(""));
+    children.push(p(""));
+    children.push(new Paragraph({ children:[ new TextRun({ text:"ご署名", font:"游明朝", size: 22 }) ], spacing:{ before: 200, after: 200 } }));
+    children.push(new Paragraph({ children:[ new TextRun({ text:"日　付：　令和　　　年　　月　　日", font:"游明朝", size: 22 }) ], spacing:{ after: 160 } }));
+    children.push(new Paragraph({ children:[ new TextRun({ text:"氏　名：", font:"游明朝", size: 22 }) ], spacing:{ after: 160 } }));
+
+    var doc = new Document({
+      sections: [{
+        properties: {
+          page: {
+            size: { width: 11906, height: 16838 },
+            margin: { top: 1134, right: 1134, bottom: 1134, left: 1134 }
+          }
+        },
+        children: children
+      }]
+    });
+
+    Packer.toBlob(doc).then(function(blob){
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url;
+      a.download = "火災保険_補償額説明および同意書.docx";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+    }).catch(function(err){
+      alert("ファイルの作成に失敗しました。もう一度お試しください。");
+      console.error(err);
+    });
+  });
+
+})();
+</script>
+</body>
+</html>

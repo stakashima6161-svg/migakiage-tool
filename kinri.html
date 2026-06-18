@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>大規模修繕・借入金利シミュレーション｜不動産経営の磨き上げツール</title>
+<meta name="description" content="金利上昇や大規模修繕の発生が、将来の返済額・キャッシュフローにどう影響するかをシミュレーションします。">
+<style>
+  :root{
+    --navy-950:#0b1e33; --navy-900:#102943; --navy-800:#15324f; --navy-700:#1d4266;
+    --blue-600:#2e6fa6; --blue-500:#3f8fd1; --blue-100:#eaf2fa;
+    --gold-500:#c7a356; --gold-300:#e3c98a;
+    --paper:#f5f7fa; --paper-warm:#eef2f6;
+    --ink-900:#142535; --ink-600:#4d5d6e; --ink-400:#7c8a98;
+    --line:#dde4eb; --white:#ffffff;
+    --good:#2c7a4b; --good-bg:#eaf4ec;
+    --warn:#a06a0e; --warn-bg:#fbf1de;
+    --bad:#b03a2e; --bad-bg:#fbeae8;
+    --radius-lg:18px; --radius-md:12px;
+    --shadow-card:0 1px 2px rgba(11,30,51,0.04), 0 8px 24px -10px rgba(11,30,51,0.12);
+    --serif: "Shippori Mincho", "Noto Serif JP", "Hiragino Mincho ProN", serif;
+    --sans: "Zen Kaku Gothic New", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+  }
+  @import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:var(--sans); color:var(--ink-900); background:var(--paper); -webkit-font-smoothing:antialiased; line-height:1.7; }
+  a{color:inherit;}
+  .skip-link{ position:absolute; left:-999px; top:0; background:var(--navy-900); color:#fff; padding:8px 14px; border-radius:8px; z-index:999; }
+  .skip-link:focus{ left:8px; top:8px; }
+
+  header.site{
+    position:relative;
+    background:
+      radial-gradient(1200px 480px at 12% -10%, rgba(63,143,209,0.22), transparent 60%),
+      radial-gradient(900px 420px at 95% 0%, rgba(199,163,86,0.16), transparent 55%),
+      linear-gradient(165deg, var(--navy-950) 0%, var(--navy-900) 48%, var(--navy-800) 100%);
+    color:#fff; overflow:hidden;
+  }
+  .header-inner{ max-width:920px; margin:0 auto; padding:24px 24px 56px; position:relative; z-index:1; }
+  .brand-row{ display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:34px; flex-wrap:wrap; }
+  .brand{ display:flex; align-items:center; gap:10px; font-family:var(--serif); font-weight:600; font-size:14.5px; letter-spacing:.04em; color:rgba(255,255,255,0.86); text-decoration:none; }
+  .brand .mark{ width:28px; height:28px; border-radius:50%; background:linear-gradient(140deg, var(--gold-300), var(--gold-500) 60%, #9a7a37); display:flex; align-items:center; justify-content:center; font-family:var(--serif); font-weight:800; font-size:12px; color:var(--navy-950); flex-shrink:0; }
+  .back-link{ display:inline-flex; align-items:center; gap:6px; font-size:13px; color:rgba(255,255,255,0.7); text-decoration:none; }
+  .back-link svg{ width:14px; height:14px; }
+  .back-link:hover{ color:#fff; }
+  .hero-kicker{ display:inline-flex; align-items:center; gap:8px; font-size:12.5px; letter-spacing:.12em; color:var(--gold-300); margin-bottom:16px; font-weight:500; }
+  .hero-kicker .rule{ width:24px; height:1px; background:var(--gold-300); display:inline-block; }
+  h1.hero-title{ font-family:var(--serif); font-weight:800; font-size:clamp(24px, 4.4vw, 36px); line-height:1.5; margin:0 0 16px; }
+  p.hero-lead{ font-size:clamp(14px, 1.9vw, 16.5px); color:rgba(255,255,255,0.82); max-width:600px; margin:0; }
+  .wave-divider{ display:block; width:100%; height:40px; margin-top:-2px; }
+
+  main{ background:var(--paper); }
+  .section{ max-width:920px; margin:0 auto; padding:48px 24px; }
+  .section.tight-top{ padding-top:0; margin-top:-28px; }
+
+  .toc{ display:flex; flex-wrap:wrap; gap:10px; background:var(--white); border:1px solid var(--line); border-radius:var(--radius-md); padding:16px 18px; box-shadow:var(--shadow-card); position:relative; z-index:2; }
+  .toc a{ font-size:12.5px; font-weight:700; color:var(--blue-600); text-decoration:none; padding:7px 13px; border-radius:999px; background:var(--blue-100); }
+  .toc a:hover{ background:var(--blue-500); color:#fff; }
+
+  .panel{ background:var(--white); border:1px solid var(--line); border-radius:var(--radius-lg); box-shadow:var(--shadow-card); padding:28px clamp(18px,4vw,36px); margin-bottom:28px; scroll-margin-top:20px; }
+  .panel-head{ margin-bottom:24px; }
+  .panel-eyebrow{ font-size:11.5px; letter-spacing:.12em; color:var(--blue-600); font-weight:700; margin-bottom:8px; display:block; }
+  .panel-title{ font-family:var(--serif); font-weight:700; font-size:clamp(19px,2.8vw,23px); color:var(--navy-900); margin:0 0 10px; }
+  .panel-desc{ color:var(--ink-600); font-size:14px; margin:0; }
+
+  .field-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:16px; margin-bottom:8px; }
+  .field{ display:flex; flex-direction:column; gap:6px; }
+  .field.full{ grid-column:1 / -1; }
+  .field label{ font-size:13px; font-weight:700; color:var(--navy-800); }
+  .field .hint{ font-size:11.5px; color:var(--ink-400); font-weight:400; }
+  .input-wrap{ position:relative; display:flex; align-items:center; }
+  .input-wrap input[type="number"], .input-wrap select{ width:100%; padding:11px 44px 11px 13px; border:1.5px solid var(--line); border-radius:10px; font-size:15px; font-family:var(--sans); color:var(--ink-900); background:var(--white); transition:border-color .15s, box-shadow .15s; }
+  .input-wrap input:focus, .input-wrap select:focus{ outline:none; border-color:var(--blue-500); box-shadow:0 0 0 3px rgba(63,143,209,0.18); }
+  .input-wrap .unit{ position:absolute; right:13px; font-size:13px; color:var(--ink-400); font-weight:700; pointer-events:none; }
+
+  .subgrid-title{ font-size:13px; font-weight:700; color:var(--navy-900); margin:22px 0 12px; padding-top:18px; border-top:1px dashed var(--line); display:flex; align-items:center; gap:8px; }
+  .subgrid-title:first-of-type{ border-top:none; padding-top:0; margin-top:0; }
+  .subgrid-title .dot{ width:7px; height:7px; border-radius:50%; background:var(--gold-500); display:inline-block; }
+
+  .compare-table{ width:100%; border-collapse:collapse; margin-top:20px; font-size:13.5px; }
+  .compare-table th, .compare-table td{ padding:12px 14px; border-bottom:1px solid var(--line); text-align:right; }
+  .compare-table th:first-child, .compare-table td:first-child{ text-align:left; }
+  .compare-table thead th{ color:var(--ink-400); font-weight:700; font-size:12px; letter-spacing:.03em; border-bottom:2px solid var(--navy-900); }
+  .compare-table tbody tr:last-child td{ border-bottom:none; }
+  .compare-table td.highlight{ color:var(--blue-600); font-weight:800; }
+  .compare-table .row-label{ font-weight:700; color:var(--navy-900); }
+  .compare-table .diff-pos{ color:var(--bad); font-weight:700; }
+  .compare-table .diff-neg{ color:var(--good); font-weight:700; }
+
+  .result-box{ margin-top:24px; border-radius:14px; padding:22px clamp(16px,3vw,26px); background:var(--paper-warm); border:1px solid var(--line); }
+
+  .month-result{ margin-top:22px; text-align:center; padding:26px 18px; border-radius:14px; background:linear-gradient(150deg, var(--navy-900), var(--navy-800)); color:#fff; }
+  .month-result .m-label{ font-size:12.5px; letter-spacing:.06em; color:var(--gold-300); font-weight:700; margin-bottom:10px; display:block; }
+  .month-result .m-value{ font-family:var(--serif); font-weight:800; font-size:clamp(28px,5.6vw,38px); }
+  .month-result .m-sub{ font-size:12.5px; color:rgba(255,255,255,0.65); margin-top:8px; }
+
+  .verdict{ margin-top:18px; border-radius:12px; padding:18px 20px; display:flex; gap:14px; align-items:flex-start; }
+  .verdict.v-good{ background:var(--good-bg); }
+  .verdict.v-warn{ background:var(--warn-bg); }
+  .verdict.v-bad{ background:var(--bad-bg); }
+  .verdict .v-icon{ flex-shrink:0; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+  .v-good .v-icon{ background:var(--good); }
+  .v-warn .v-icon{ background:var(--warn); }
+  .v-bad .v-icon{ background:var(--bad); }
+  .v-icon svg{ width:16px; height:16px; }
+  .verdict .v-title{ font-weight:700; font-size:14.5px; margin:0 0 4px; }
+  .v-good .v-title{ color:var(--good); }
+  .v-warn .v-title{ color:var(--warn); }
+  .v-bad .v-title{ color:var(--bad); }
+  .verdict p{ margin:0; font-size:13.5px; color:var(--ink-600); }
+
+  .btn-row{ display:flex; gap:12px; flex-wrap:wrap; margin-top:22px; }
+  .btn{ appearance:none; border:none; cursor:pointer; font-family:var(--sans); font-weight:700; font-size:14px; padding:13px 24px; border-radius:10px; display:inline-flex; align-items:center; gap:8px; transition:transform .15s, box-shadow .15s, background .15s; }
+  .btn:active{ transform:translateY(1px); }
+  .btn-primary{ background:linear-gradient(135deg, var(--blue-600), var(--navy-800)); color:#fff; box-shadow:0 8px 20px -8px rgba(46,111,166,0.5); }
+  .btn-primary:hover{ box-shadow:0 12px 26px -8px rgba(46,111,166,0.6); }
+  .btn svg{ width:16px; height:16px; }
+
+  .note-box{ margin-top:18px; font-size:12.5px; color:var(--ink-400); background:var(--paper-warm); border-radius:10px; padding:12px 16px; line-height:1.7; }
+  .note-box strong{ color:var(--ink-600); }
+
+  /* related tools */
+  .related-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:14px; margin-top:8px; }
+  .related-card{ background:var(--white); border:1px solid var(--line); border-radius:12px; padding:16px 18px; text-decoration:none; display:flex; flex-direction:column; gap:6px; transition:transform .18s, box-shadow .18s, border-color .18s; }
+  .related-card:hover{ transform:translateY(-3px); box-shadow:0 14px 28px -14px rgba(16,41,67,0.25); border-color:rgba(63,143,209,0.35); }
+  .related-card .rc-title{ font-weight:700; font-size:13.5px; color:var(--navy-900); }
+  .related-card .rc-desc{ font-size:12px; color:var(--ink-600); }
+  .related-card .rc-cta{ font-size:12px; font-weight:700; color:var(--blue-600); margin-top:4px; }
+
+  footer.site{ background:var(--navy-950); color:rgba(255,255,255,0.6); padding:30px 24px; text-align:center; font-size:12.5px; }
+  footer.site .f-brand{ color:rgba(255,255,255,0.85); font-weight:700; margin-bottom:6px; }
+
+  @media (max-width:560px){
+    .header-inner{ padding:20px 18px 48px; }
+    .section{ padding:32px 18px; }
+    .panel{ padding:22px 16px; }
+    .compare-table{ font-size:12px; }
+    .compare-table th, .compare-table td{ padding:9px 8px; }
+  }
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; scroll-behavior:auto !important; } }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">本文へスキップ</a>
+
+<header class="site">
+  <div class="header-inner">
+    <div class="brand-row">
+      <a class="brand" href="index.html"><span class="mark">磨</span>不動産経営の磨き上げ</a>
+      <a class="back-link" href="index.html">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        ツール一覧へ戻る
+      </a>
+    </div>
+    <span class="hero-kicker"><span class="rule"></span>03 / INTEREST RATE SIMULATION</span>
+    <h1 class="hero-title">大規模修繕・借入金利<br>シミュレーション</h1>
+    <p class="hero-lead">金利が上昇したとき、また大規模修繕が発生したとき、年間の返済額・手残りがどう変わるかを確認します。将来の資金計画の前提を見える化します。</p>
+  </div>
+  <svg class="wave-divider" viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M0,32 C240,68 480,0 720,24 C960,48 1200,8 1440,32 L1440,60 L0,60 Z" fill="#f5f7fa"></path>
+  </svg>
+</header>
+
+<main id="main">
+  <div class="section tight-top">
+    <nav class="toc" aria-label="ツール内ナビゲーション">
+      <a href="#rate">① 金利上昇シミュレーション</a>
+      <a href="#repair">② 大規模修繕の影響</a>
+      <a href="#related">③ 関連ツール</a>
+    </nav>
+  </div>
+
+  <section class="section" style="padding-top:0;">
+    <div class="panel" id="rate">
+      <div class="panel-head">
+        <span class="panel-eyebrow">STEP 1 — 見える化</span>
+        <h2 class="panel-title">金利上昇シミュレーション</h2>
+        <p class="panel-desc">借入残高・現在の金利・残りの返済期間を入力すると、金利が+1%・+2%上昇した場合の年間返済額の増加を比較します（元利均等返済で計算）。</p>
+      </div>
+
+      <div class="field-grid">
+        <div class="field">
+          <label for="loanPrincipal">借入残高</label>
+          <div class="input-wrap"><input type="number" id="loanPrincipal" inputmode="numeric" min="0" step="100000" placeholder="例：50000000"><span class="unit">円</span></div>
+        </div>
+        <div class="field">
+          <label for="currentRate">現在の借入金利</label>
+          <div class="input-wrap"><input type="number" id="currentRate" inputmode="decimal" min="0" max="20" step="0.1" placeholder="例：2.0"><span class="unit">%</span></div>
+        </div>
+        <div class="field">
+          <label for="remainingYears">残りの返済期間</label>
+          <div class="input-wrap"><input type="number" id="remainingYears" inputmode="numeric" min="1" max="50" step="1" placeholder="例：20"><span class="unit">年</span></div>
+        </div>
+      </div>
+
+      <div class="result-box" id="rateResultBox" style="display:none;">
+        <table class="compare-table">
+          <thead>
+            <tr><th>シナリオ</th><th>金利</th><th>年間返済額</th><th>月額返済額</th><th>現状との差</th></tr>
+          </thead>
+          <tbody id="rateTableBody"></tbody>
+        </table>
+      </div>
+
+      <div class="verdict" id="rateVerdict" style="display:none;"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" id="calcRateBtn" type="button">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          金利上昇の影響を計算する
+        </button>
+      </div>
+      <div class="note-box"><strong>ご注意：</strong>本シミュレーションは元利均等返済を前提とした簡易計算です。実際の返済額は金融機関の契約条件により異なります。</div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0;">
+    <div class="panel" id="repair">
+      <div class="panel-head">
+        <span class="panel-eyebrow">STEP 2 — 見える化</span>
+        <h2 class="panel-title">大規模修繕が発生した場合の影響</h2>
+        <p class="panel-desc">想定される大規模修繕費用と、現在の年間家賃収入を入力すると、その年の手残り（収入−返済−修繕費）への影響を確認できます。</p>
+      </div>
+
+      <div class="field-grid">
+        <div class="field">
+          <label for="annualRent">年間家賃収入<span class="hint">（満室想定・概算でOK）</span></label>
+          <div class="input-wrap"><input type="number" id="annualRent" inputmode="numeric" min="0" step="100000" placeholder="例：6000000"><span class="unit">円</span></div>
+        </div>
+        <div class="field">
+          <label for="otherExpense">その他運営費<span class="hint">（管理費・固都税等／年間）</span></label>
+          <div class="input-wrap"><input type="number" id="otherExpense" inputmode="numeric" min="0" step="10000" placeholder="例：800000"><span class="unit">円</span></div>
+        </div>
+        <div class="field">
+          <label for="repairCost">想定する大規模修繕費用</label>
+          <div class="input-wrap"><input type="number" id="repairCost" inputmode="numeric" min="0" step="100000" placeholder="例：8000000"><span class="unit">円</span></div>
+        </div>
+        <div class="field">
+          <label for="repairReserve">修繕費のうち、積立・自己資金で準備済みの金額</label>
+          <div class="input-wrap"><input type="number" id="repairReserve" inputmode="numeric" min="0" step="100000" placeholder="例：3000000"><span class="unit">円</span></div>
+        </div>
+      </div>
+
+      <div class="result-box" id="repairResultBox" style="display:none;">
+        <table class="compare-table">
+          <tbody id="repairTableBody"></tbody>
+        </table>
+      </div>
+
+      <div class="verdict" id="repairVerdict" style="display:none;"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" id="calcRepairBtn" type="button">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          修繕の影響を計算する
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0;" id="related">
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-eyebrow">NEXT STEP</span>
+        <h2 class="panel-title">関連する診断ツール</h2>
+        <p class="panel-desc">金利・修繕の影響が分かったら、他の視点からも経営状況を確認してみましょう。</p>
+      </div>
+      <div class="related-grid">
+        <a class="related-card" href="cf.html">
+          <span class="rc-title">物件別キャッシュフロー診断</span>
+          <span class="rc-desc">所有物件ごとの収益性を比較します。</span>
+          <span class="rc-cta">診断する →</span>
+        </a>
+        <a class="related-card" href="risk.html">
+          <span class="rc-title">賃貸経営継続診断（火災・地震）</span>
+          <span class="rc-desc">災害リスクへの備えを確認します。</span>
+          <span class="rc-cta">診断する →</span>
+        </a>
+        <a class="related-card" href="migakiage.html">
+          <span class="rc-title">不動産経営の磨き上げ診断</span>
+          <span class="rc-desc">経営全体を5つの視点で整理します。</span>
+          <span class="rc-cta">診断する →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="f-brand">不動産経営の磨き上げツール</div>
+  <p>本ツールの診断結果は一般的な目安であり、個別の税務・金融上の判断には専門家への相談をおすすめします。</p>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  function yen(n){ if(!isFinite(n)) return "—"; return Math.round(n).toLocaleString("ja-JP") + " 円"; }
+  function num(id){ var v = parseFloat(document.getElementById(id).value); return isFinite(v) ? v : 0; }
+
+  function annualPayment(principal, annualRatePct, years){
+    var r = annualRatePct / 100 / 12;
+    var n = years * 12;
+    if (n <= 0) return 0;
+    if (r === 0) return (principal / n) * 12;
+    var monthly = principal * r / (1 - Math.pow(1+r, -n));
+    return monthly * 12;
+  }
+
+  document.getElementById("calcRateBtn").addEventListener("click", function(){
+    var principal = num("loanPrincipal");
+    var rate = num("currentRate");
+    var years = num("remainingYears") || 1;
+
+    var scenarios = [
+      { label: "現状", delta: 0 },
+      { label: "+1.0%", delta: 1 },
+      { label: "+2.0%", delta: 2 }
+    ];
+
+    var baseAnnual = annualPayment(principal, rate, years);
+    var rows = "";
+    scenarios.forEach(function(s){
+      var r2 = rate + s.delta;
+      var annual = annualPayment(principal, r2, years);
+      var diff = annual - baseAnnual;
+      var diffCell = s.delta === 0 ? "—" : "<span class='" + (diff>=0?"diff-pos":"diff-neg") + "'>" + (diff>=0?"+":"") + yen(diff) + "</span>";
+      rows += "<tr><td class='row-label'>" + s.label + "</td><td>" + r2.toFixed(1) + " %</td><td class='" + (s.delta===0?'highlight':'') + "'>" + yen(annual) + "</td><td>" + yen(annual/12) + "</td><td>" + diffCell + "</td></tr>";
+    });
+    document.getElementById("rateTableBody").innerHTML = rows;
+    document.getElementById("rateResultBox").style.display = "block";
+
+    var verdict = document.getElementById("rateVerdict");
+    var diff2 = annualPayment(principal, rate+2, years) - baseAnnual;
+    var cls, html;
+    if (principal <= 0){
+      cls = "v-warn";
+      html = "<div class='v-icon'><svg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M12 9v4M12 17h.01M10.29 3.86l-8.18 14.18A1 1 0 003 19.5h18a1 1 0 00.89-1.46L13.71 3.86a1 1 0 00-1.42 0z' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg></div><div><p class='v-title'>借入残高を入力してください</p><p>比較を行うには、借入残高・金利・残期間を入力してください。</p></div>";
+    } else if (diff2 > baseAnnual * 0.15){
+      cls = "v-bad";
+      html = "<div class='v-icon'><svg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M12 9v4M12 17h.01M10.29 3.86l-8.18 14.18A1 1 0 003 19.5h18a1 1 0 00.89-1.46L13.71 3.86a1 1 0 00-1.42 0z' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg></div><div><p class='v-title'>金利上昇の影響が大きい状態です（+2%で年間 " + yen(diff2) + " の増加）</p><p>固定金利への切り替えや返済期間の見直しなど、早めの対策をご検討ください。</p></div>";
+    } else {
+      cls = "v-good";
+      html = "<div class='v-icon'><svg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M20 6L9 17l-5-5' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/></svg></div><div><p class='v-title'>金利上昇の影響は限定的です（+2%で年間 " + yen(diff2) + " の増加）</p><p>現状の返済余力であれば、一定の金利上昇にも対応しやすい状態です。</p></div>";
+    }
+    verdict.className = "verdict " + cls;
+    verdict.innerHTML = html;
+    verdict.style.display = "flex";
+  });
+
+  document.getElementById("calcRepairBtn").addEventListener("click", function(){
+    var rent = num("annualRent");
+    var other = num("otherExpense");
+    var repair = num("repairCost");
+    var reserve = num("repairReserve");
+
+    var netBefore = rent - other;
+    var shortfall = Math.max(0, repair - reserve);
+    var netAfter = netBefore - shortfall;
+
+    var rows = "";
+    rows += "<tr><td class='row-label'>年間家賃収入</td><td colspan='3'>" + yen(rent) + "</td></tr>";
+    rows += "<tr><td class='row-label'>その他運営費</td><td colspan='3'>− " + yen(other) + "</td></tr>";
+    rows += "<tr><td class='row-label'>修繕前の年間手残り</td><td colspan='3' class='highlight'>" + yen(netBefore) + "</td></tr>";
+    rows += "<tr><td class='row-label'>大規模修繕費用</td><td colspan='3'>" + yen(repair) + "</td></tr>";
+    rows += "<tr><td class='row-label'>準備済みの資金</td><td colspan='3'>− " + yen(reserve) + "</td></tr>";
+    rows += "<tr><td class='row-label'>不足額（自己資金等で追加対応が必要な金額）</td><td colspan='3' class='" + (shortfall>0?'diff-pos':'diff-neg') + "'>" + yen(shortfall) + "</td></tr>";
+
+    document.getElementById("repairTableBody").innerHTML = rows;
+    document.getElementById("repairResultBox").style.display = "block";
+
+    var verdict = document.getElementById("repairVerdict");
+    var cls, html;
+    if (repair <= 0){
+      cls = "v-warn";
+      html = "<div class='v-icon'><svg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M12 9v4M12 17h.01M10.29 3.86l-8.18 14.18A1 1 0 003 19.5h18a1 1 0 00.89-1.46L13.71 3.86a1 1 0 00-1.42 0z' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg></div><div><p class='v-title'>想定する修繕費用を入力してください</p><p>修繕費用を入力すると、不足額の有無を確認できます。</p></div>";
+    } else if (shortfall > 0 && shortfall > netBefore){
+      cls = "v-bad";
+      html = "<div class='v-icon'><svg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M12 9v4M12 17h.01M10.29 3.86l-8.18 14.18A1 1 0 003 19.5h18a1 1 0 00.89-1.46L13.71 3.86a1 1 0 00-1.42 0z' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg></div><div><p class='v-title'>修繕費の不足額が、年間手残りを上回っています</p><p>その年は手残りだけでは対応できない見込みです。融資や資金計画を早めにご検討ください。</p></div>";
+    } else if (shortfall > 0){
+      cls = "v-warn";
+      html = "<div class='v-icon'><svg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M12 9v4M12 17h.01M10.29 3.86l-8.18 14.18A1 1 0 003 19.5h18a1 1 0 00.89-1.46L13.71 3.86a1 1 0 00-1.42 0z' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg></div><div><p class='v-title'>修繕費に一部不足があります（不足額 " + yen(shortfall) + "）</p><p>年間手残りの範囲内でカバーできる可能性がありますが、他の支出への影響も確認しておきましょう。</p></div>";
+    } else {
+      cls = "v-good";
+      html = "<div class='v-icon'><svg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M20 6L9 17l-5-5' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/></svg></div><div><p class='v-title'>準備済みの資金で修繕費をカバーできています</p><p>計画的な積立ができている状態です。今後も継続して備えていきましょう。</p></div>";
+    }
+    verdict.className = "verdict " + cls;
+    verdict.innerHTML = html;
+    verdict.style.display = "flex";
+  });
+})();
+</script>
+</body>
+</html>

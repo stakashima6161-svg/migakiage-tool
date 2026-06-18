@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>出口戦略診断｜不動産経営の磨き上げツール</title>
+<meta name="description" content="売却・建替・継続保有・資産承継など、将来の選択肢を整理し、今から準備しておくべきことを明らかにします。">
+<style>
+  :root{
+    --navy-950:#0b1e33; --navy-900:#102943; --navy-800:#15324f; --navy-700:#1d4266;
+    --blue-600:#2e6fa6; --blue-500:#3f8fd1; --blue-100:#eaf2fa;
+    --gold-500:#c7a356; --gold-300:#e3c98a;
+    --paper:#f5f7fa; --paper-warm:#eef2f6;
+    --ink-900:#142535; --ink-600:#4d5d6e; --ink-400:#7c8a98;
+    --line:#dde4eb; --white:#ffffff;
+    --good:#2c7a4b; --good-bg:#eaf4ec;
+    --warn:#a06a0e; --warn-bg:#fbf1de;
+    --bad:#b03a2e; --bad-bg:#fbeae8;
+    --radius-lg:18px; --radius-md:12px;
+    --shadow-card:0 1px 2px rgba(11,30,51,0.04), 0 8px 24px -10px rgba(11,30,51,0.12);
+    --serif: "Shippori Mincho", "Noto Serif JP", "Hiragino Mincho ProN", serif;
+    --sans: "Zen Kaku Gothic New", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+  }
+  @import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap');
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; font-family:var(--sans); color:var(--ink-900); background:var(--paper); -webkit-font-smoothing:antialiased; line-height:1.7; }
+  a{color:inherit;}
+  .skip-link{ position:absolute; left:-999px; top:0; background:var(--navy-900); color:#fff; padding:8px 14px; border-radius:8px; z-index:999; }
+  .skip-link:focus{ left:8px; top:8px; }
+
+  header.site{
+    position:relative;
+    background:
+      radial-gradient(1200px 480px at 12% -10%, rgba(63,143,209,0.22), transparent 60%),
+      radial-gradient(900px 420px at 95% 0%, rgba(199,163,86,0.16), transparent 55%),
+      linear-gradient(165deg, var(--navy-950) 0%, var(--navy-900) 48%, var(--navy-800) 100%);
+    color:#fff; overflow:hidden;
+  }
+  .header-inner{ max-width:920px; margin:0 auto; padding:24px 24px 56px; position:relative; z-index:1; }
+  .brand-row{ display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:34px; flex-wrap:wrap; }
+  .brand{ display:flex; align-items:center; gap:10px; font-family:var(--serif); font-weight:600; font-size:14.5px; letter-spacing:.04em; color:rgba(255,255,255,0.86); text-decoration:none; }
+  .brand .mark{ width:28px; height:28px; border-radius:50%; background:linear-gradient(140deg, var(--gold-300), var(--gold-500) 60%, #9a7a37); display:flex; align-items:center; justify-content:center; font-family:var(--serif); font-weight:800; font-size:12px; color:var(--navy-950); flex-shrink:0; }
+  .back-link{ display:inline-flex; align-items:center; gap:6px; font-size:13px; color:rgba(255,255,255,0.7); text-decoration:none; }
+  .back-link svg{ width:14px; height:14px; }
+  .back-link:hover{ color:#fff; }
+  .hero-kicker{ display:inline-flex; align-items:center; gap:8px; font-size:12.5px; letter-spacing:.12em; color:var(--gold-300); margin-bottom:16px; font-weight:500; }
+  .hero-kicker .rule{ width:24px; height:1px; background:var(--gold-300); display:inline-block; }
+  h1.hero-title{ font-family:var(--serif); font-weight:800; font-size:clamp(24px, 4.4vw, 36px); line-height:1.5; margin:0 0 16px; }
+  p.hero-lead{ font-size:clamp(14px, 1.9vw, 16.5px); color:rgba(255,255,255,0.82); max-width:600px; margin:0; }
+  .wave-divider{ display:block; width:100%; height:40px; margin-top:-2px; }
+
+  main{ background:var(--paper); }
+  .section{ max-width:920px; margin:0 auto; padding:48px 24px; }
+  .section.tight-top{ padding-top:0; margin-top:-28px; }
+
+  .toc{ display:flex; flex-wrap:wrap; gap:10px; background:var(--white); border:1px solid var(--line); border-radius:var(--radius-md); padding:16px 18px; box-shadow:var(--shadow-card); position:relative; z-index:2; }
+  .toc a{ font-size:12.5px; font-weight:700; color:var(--blue-600); text-decoration:none; padding:7px 13px; border-radius:999px; background:var(--blue-100); }
+  .toc a:hover{ background:var(--blue-500); color:#fff; }
+
+  .panel{ background:var(--white); border:1px solid var(--line); border-radius:var(--radius-lg); box-shadow:var(--shadow-card); padding:28px clamp(18px,4vw,36px); margin-bottom:28px; scroll-margin-top:20px; }
+  .panel-head{ margin-bottom:24px; }
+  .panel-eyebrow{ font-size:11.5px; letter-spacing:.12em; color:var(--blue-600); font-weight:700; margin-bottom:8px; display:block; }
+  .panel-title{ font-family:var(--serif); font-weight:700; font-size:clamp(19px,2.8vw,23px); color:var(--navy-900); margin:0 0 10px; }
+  .panel-desc{ color:var(--ink-600); font-size:14px; margin:0; }
+
+  .quiz-list{ display:flex; flex-direction:column; gap:16px; }
+  .quiz-item{ border:1px solid var(--line); border-radius:12px; padding:16px 18px; }
+  .quiz-q{ font-size:14px; font-weight:700; color:var(--navy-900); margin:0 0 12px; display:flex; gap:10px; }
+  .quiz-q .q-num{ font-family:var(--serif); color:var(--blue-600); flex-shrink:0; }
+  .quiz-options{ display:flex; flex-direction:column; gap:8px; padding-left:24px; }
+  .quiz-options label{ display:flex; align-items:center; gap:9px; font-size:13.5px; color:var(--ink-600); padding:8px 10px; border-radius:8px; cursor:pointer; transition:background .15s; }
+  .quiz-options label:hover{ background:var(--paper-warm); }
+  .quiz-options input[type="radio"]{ accent-color:var(--blue-500); width:16px; height:16px; flex-shrink:0; }
+
+  .score-summary{ display:flex; align-items:center; gap:22px; flex-wrap:wrap; background:var(--paper-warm); border-radius:14px; padding:22px clamp(16px,3vw,26px); margin-top:22px; }
+  .score-circle{ width:96px; height:96px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; flex-direction:column; background:var(--white); border:6px solid var(--blue-500); position:relative; }
+  .score-circle .sc-num{ font-family:var(--serif); font-weight:800; font-size:26px; color:var(--navy-900); line-height:1; }
+  .score-circle .sc-max{ font-size:10px; color:var(--ink-400); }
+  .score-text{ flex:1; min-width:200px; }
+  .score-text .s-rank{ font-family:var(--serif); font-weight:800; font-size:17px; margin:0 0 6px; }
+  .score-text p{ margin:0; font-size:13.5px; color:var(--ink-600); }
+
+  .direction-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:10px; margin-top:18px; }
+  .direction-card{ border:1.5px solid var(--line); border-radius:12px; padding:14px 12px; text-align:center; transition:border-color .2s, background .2s; }
+  .direction-card.active{ border-color:var(--blue-500); background:var(--blue-100); }
+  .direction-card .d-label{ font-weight:700; font-size:13px; color:var(--navy-900); }
+
+  .related-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:14px; margin-top:8px; }
+  .related-card{ background:var(--white); border:1px solid var(--line); border-radius:12px; padding:16px 18px; text-decoration:none; display:flex; flex-direction:column; gap:6px; transition:transform .18s, box-shadow .18s, border-color .18s; }
+  .related-card:hover{ transform:translateY(-3px); box-shadow:0 14px 28px -14px rgba(16,41,67,0.25); border-color:rgba(63,143,209,0.35); }
+  .related-card .rc-title{ font-weight:700; font-size:13.5px; color:var(--navy-900); }
+  .related-card .rc-desc{ font-size:12px; color:var(--ink-600); }
+  .related-card .rc-cta{ font-size:12px; font-weight:700; color:var(--blue-600); margin-top:4px; }
+
+  footer.site{ background:var(--navy-950); color:rgba(255,255,255,0.6); padding:30px 24px; text-align:center; font-size:12.5px; }
+  footer.site .f-brand{ color:rgba(255,255,255,0.85); font-weight:700; margin-bottom:6px; }
+
+  @media (max-width:560px){
+    .header-inner{ padding:20px 18px 48px; }
+    .section{ padding:32px 18px; }
+    .panel{ padding:22px 16px; }
+    .score-circle{ width:84px; height:84px; }
+  }
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; scroll-behavior:auto !important; } }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">本文へスキップ</a>
+
+<header class="site">
+  <div class="header-inner">
+    <div class="brand-row">
+      <a class="brand" href="index.html"><span class="mark">磨</span>不動産経営の磨き上げ</a>
+      <a class="back-link" href="index.html">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        ツール一覧へ戻る
+      </a>
+    </div>
+    <span class="hero-kicker"><span class="rule"></span>06 / EXIT STRATEGY DIAGNOSIS</span>
+    <h1 class="hero-title">出口戦略診断</h1>
+    <p class="hero-lead">売却・建替・継続保有・資産承継など、将来の選択肢を整理し、今から準備しておくべきことを明らかにします。</p>
+  </div>
+  <svg class="wave-divider" viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M0,32 C240,68 480,0 720,24 C960,48 1200,8 1440,32 L1440,60 L0,60 Z" fill="#f5f7fa"></path>
+  </svg>
+</header>
+
+<main id="main">
+  <div class="section tight-top">
+    <nav class="toc" aria-label="ツール内ナビゲーション">
+      <a href="#quiz">① 簡易チェック診断</a>
+      <a href="#related">② 関連ツール</a>
+    </nav>
+  </div>
+
+  <section class="section" style="padding-top:0;">
+    <div class="panel" id="quiz">
+      <div class="panel-head">
+        <span class="panel-eyebrow">STEP 1 — あるべき未来を描く</span>
+        <h2 class="panel-title">簡易チェック診断</h2>
+        <p class="panel-desc">6つの質問に答えると、現状の出口戦略の準備状況を簡易的に点数化し、方向性の目安を表示します。</p>
+      </div>
+
+      <div class="quiz-list" id="quizList"></div>
+
+      <div class="score-summary" id="scoreSummary" style="display:none;">
+        <div class="score-circle">
+          <span class="sc-num" id="scoreNum">0</span>
+          <span class="sc-max">/ 100点</span>
+        </div>
+        <div class="score-text">
+          <p class="s-rank" id="scoreRank">—</p>
+          <p id="scoreComment">すべての質問に回答すると結果が表示されます。</p>
+        </div>
+      </div>
+
+      <div class="direction-grid" id="directionGrid" style="display:none;">
+        <div class="direction-card" id="dirContinue"><div class="d-label">継続保有</div></div>
+        <div class="direction-card" id="dirImprove"><div class="d-label">改善・磨き上げ</div></div>
+        <div class="direction-card" id="dirSucceed"><div class="d-label">資産承継準備</div></div>
+        <div class="direction-card" id="dirSell"><div class="d-label">売却・組替え検討</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0;" id="related">
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-eyebrow">NEXT STEP</span>
+        <h2 class="panel-title">関連する診断ツール</h2>
+        <p class="panel-desc">方向性が見えたら、他の視点からも経営状況を確認してみましょう。</p>
+      </div>
+      <div class="related-grid">
+        <a class="related-card" href="houjinka.html">
+          <span class="rc-title">法人化診断</span>
+          <span class="rc-desc">承継・税務面での法人化の目安を確認します。</span>
+          <span class="rc-cta">診断する →</span>
+        </a>
+        <a class="related-card" href="cf.html">
+          <span class="rc-title">物件別キャッシュフロー診断</span>
+          <span class="rc-desc">継続保有すべき物件かどうかを確認します。</span>
+          <span class="rc-cta">診断する →</span>
+        </a>
+        <a class="related-card" href="migakiage.html">
+          <span class="rc-title">不動産経営の磨き上げ診断</span>
+          <span class="rc-desc">経営全体を5つの視点で整理します。</span>
+          <span class="rc-cta">診断する →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="f-brand">不動産経営の磨き上げツール</div>
+  <p>本ツールの診断結果は一般的な目安であり、個別の税務・法務上の判断には専門家への相談をおすすめします。</p>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  var QUESTIONS = [
+    {
+      q: "今後10年間、この物件・経営をどうしたいと考えていますか？",
+      opts: [
+        { t: "できる限り長く継続保有したい", v: {continue:5,improve:2,succeed:2,sell:0} },
+        { t: "状況次第で売却や組替えも検討したい", v: {continue:1,improve:2,succeed:1,sell:5} },
+        { t: "まだ方針を決めていない", v: {continue:1,improve:2,succeed:1,sell:1} }
+      ]
+    },
+    {
+      q: "後継者（家族・親族など）に引き継ぐ意向はありますか？",
+      opts: [
+        { t: "引き継ぐ意向があり、後継者も決まっている", v: {continue:2,improve:1,succeed:5,sell:0} },
+        { t: "引き継ぎたいが、まだ後継者が決まっていない", v: {continue:1,improve:2,succeed:4,sell:1} },
+        { t: "引き継ぐ予定はない（売却・処分を想定）", v: {continue:0,improve:1,succeed:0,sell:5} }
+      ]
+    },
+    {
+      q: "現在の物件の収益性（キャッシュフロー）をどう評価していますか？",
+      opts: [
+        { t: "良好で、特に問題はない", v: {continue:5,improve:1,succeed:3,sell:0} },
+        { t: "改善の余地がある", v: {continue:1,improve:5,succeed:1,sell:2} },
+        { t: "厳しい状況が続いている", v: {continue:0,improve:2,succeed:0,sell:5} }
+      ]
+    },
+    {
+      q: "建物の老朽化・大規模修繕の見通しは？",
+      opts: [
+        { t: "築浅、または修繕計画が整っている", v: {continue:5,improve:2,succeed:2,sell:0} },
+        { t: "老朽化が進んでおり、近く大規模修繕が必要", v: {continue:1,improve:5,succeed:1,sell:2} },
+        { t: "建て替えや売却も視野に入れている", v: {continue:0,improve:1,succeed:1,sell:5} }
+      ]
+    },
+    {
+      q: "相続・資産承継について、現状の準備状況は？",
+      opts: [
+        { t: "対策済み、または専門家に相談しながら進めている", v: {continue:3,improve:2,succeed:5,sell:1} },
+        { t: "気になっているが、まだ何もしていない", v: {continue:1,improve:2,succeed:4,sell:2} },
+        { t: "特に考えていない", v: {continue:2,improve:1,succeed:0,sell:2} }
+      ]
+    },
+    {
+      q: "出口戦略（売却・承継・組替え等）について、専門家に相談したことはありますか？",
+      opts: [
+        { t: "相談したことがあり、方針が決まっている", v: {continue:4,improve:3,succeed:4,sell:3} },
+        { t: "相談したことはあるが、方針は未定", v: {continue:2,improve:3,succeed:2,sell:3} },
+        { t: "相談したことがない", v: {continue:1,improve:1,succeed:1,sell:1} }
+      ]
+    }
+  ];
+
+  var quizList = document.getElementById("quizList");
+  var answers = new Array(QUESTIONS.length).fill(null);
+
+  QUESTIONS.forEach(function(item, qi){
+    var wrap = document.createElement("div");
+    wrap.className = "quiz-item";
+
+    var qEl = document.createElement("p");
+    qEl.className = "quiz-q";
+    qEl.innerHTML = "<span class='q-num'>Q" + (qi+1) + "</span><span>" + item.q + "</span>";
+    wrap.appendChild(qEl);
+
+    var optsWrap = document.createElement("div");
+    optsWrap.className = "quiz-options";
+
+    item.opts.forEach(function(opt){
+      var label = document.createElement("label");
+      var input = document.createElement("input");
+      input.type = "radio";
+      input.name = "q" + qi;
+      input.addEventListener("change", function(){
+        answers[qi] = opt.v;
+        updateScore();
+      });
+      label.appendChild(input);
+      var span = document.createElement("span");
+      span.textContent = opt.t;
+      label.appendChild(span);
+      optsWrap.appendChild(label);
+    });
+
+    wrap.appendChild(optsWrap);
+    quizList.appendChild(wrap);
+  });
+
+  function updateScore(){
+    var answeredCount = answers.filter(function(a){ return a !== null; }).length;
+    var summary = document.getElementById("scoreSummary");
+    var dirGrid = document.getElementById("directionGrid");
+
+    if (answeredCount === 0){
+      summary.style.display = "none";
+      dirGrid.style.display = "none";
+      return;
+    }
+    summary.style.display = "flex";
+
+    var totals = {continue:0, improve:0, succeed:0, sell:0};
+    var maxPossible = QUESTIONS.length * 5;
+    var readinessSum = 0;
+
+    answers.forEach(function(a){
+      if (!a) return;
+      totals.continue += a.continue;
+      totals.improve += a.improve;
+      totals.succeed += a.succeed;
+      totals.sell += a.sell;
+      var best = Math.max(a.continue, a.improve, a.succeed, a.sell);
+      readinessSum += best;
+    });
+
+    var score = Math.round(readinessSum / maxPossible * 100);
+    document.getElementById("scoreNum").textContent = score;
+
+    var rankEl = document.getElementById("scoreRank");
+    var commentEl = document.getElementById("scoreComment");
+
+    if (answeredCount < QUESTIONS.length){
+      rankEl.textContent = "回答中（" + answeredCount + " / " + QUESTIONS.length + " 問）";
+      rankEl.style.color = "var(--ink-600)";
+      commentEl.textContent = "すべての質問に回答すると、方向性の目安が表示されます。";
+      dirGrid.style.display = "none";
+      return;
+    }
+
+    var dirNames = {continue:"継続保有", improve:"改善・磨き上げ", succeed:"資産承継準備", sell:"売却・組替え検討"};
+    var topKey = "continue";
+    Object.keys(totals).forEach(function(k){
+      if (totals[k] > totals[topKey]) topKey = k;
+    });
+
+    rankEl.textContent = "おすすめの方向性：" + dirNames[topKey];
+    rankEl.style.color = "var(--blue-600)";
+
+    var comments = {
+      continue: "現状の経営状態は良好で、継続保有が適した状況です。今後も定期的な見直しを続けてください。",
+      improve: "収益性や建物の状態に改善余地があります。磨き上げ診断や物件別キャッシュフロー診断などで、優先課題を整理することをおすすめします。",
+      succeed: "資産承継の準備を進めるべき段階にあります。後継者との対話や、法人化診断も含めた専門家への相談をおすすめします。",
+      sell: "売却・組替えも有力な選択肢として検討すべき状況です。出口のタイミングや税務上の影響について、早めに専門家にご相談ください。"
+    };
+    commentEl.textContent = comments[topKey];
+
+    dirGrid.style.display = "grid";
+    ["dirContinue","dirImprove","dirSucceed","dirSell"].forEach(function(id){ document.getElementById(id).classList.remove("active"); });
+    var idMap = {continue:"dirContinue", improve:"dirImprove", succeed:"dirSucceed", sell:"dirSell"};
+    document.getElementById(idMap[topKey]).classList.add("active");
+  }
+})();
+</script>
+</body>
+</html>
